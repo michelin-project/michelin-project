@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">michelin</string>
+    <string name="title_activity_main">michelin</string>
+    <string name="package_name">com.michelin.companion</string>
+    <string name="custom_url_scheme">com.michelin.companion</string>
+</resources>
