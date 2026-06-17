@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async signIn(email: string, pass: string): Promise<{ access_token: string }> {
@@ -20,12 +20,21 @@ export class AuthService {
     };
   }
 
-  async signUp(email: string, pass: string, extraData: any = {}): Promise<{ access_token: string }> {
+  async signUp(
+    email: string,
+    pass: string,
+    extraData: any = {},
+  ): Promise<{ access_token: string }> {
     const existingUser = await this.usersService.findOne(email);
     if (existingUser) {
       throw new UnauthorizedException('Cet email est déjà utilisé');
     }
-    const newUser = await this.usersService.create({ email, password: pass, name: 'Nouveau Cycliste', ...extraData });
+    const newUser = await this.usersService.create({
+      email,
+      password: pass,
+      name: 'Nouveau Cycliste',
+      ...extraData,
+    });
     const payload = { sub: newUser.id, email: newUser.email };
     return { access_token: await this.jwtService.signAsync(payload) };
   }

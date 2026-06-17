@@ -9,19 +9,15 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mariadb',
-      host: 'localhost',
-      port: 3306,
-      username: 'root', // Mettez votre utilisateur MariaDB
-      password: '',     // Mettez votre mot de passe MariaDB
-      database: 'michelin',
-      autoLoadEntities: true, // Charge automatiquement les entités comme Tire
-      synchronize: true, // Va créer la table automatiquement (à désactiver en production)
+      type: 'mongodb',
+      url: 'mongodb://michelin:michelin_dev_pwd@localhost:27017/michelin_catalog?authSource=admin',
+      autoLoadEntities: true,
+      synchronize: true,
     }),
     AuthModule,
     UsersModule,
     TiresModule,
-    LeaderboardModule
+    LeaderboardModule,
   ],
   controllers: [AppController],
   providers: [],
