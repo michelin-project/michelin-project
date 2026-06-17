@@ -99,7 +99,7 @@ export function CheckoutPaymentScreen({
           </div>
 
           <div className="space-y-3">
-            <span className="text-xs font-semibold text-foreground">NOM DU TITULAIRE</span>
+            <span className="text-xs font-semibold text-foreground">Nom du titulaire*</span>
 
             <input
               type="text"
@@ -113,7 +113,7 @@ export function CheckoutPaymentScreen({
               }`}
             />
 
-            <span className="text-xs font-semibold text-foreground">Numéro de carte</span>
+            <span className="text-xs font-semibold text-foreground">Numéro de carte*</span>
             <input
               type="text"
               placeholder="Numéro de carte"
@@ -127,7 +127,7 @@ export function CheckoutPaymentScreen({
             />
 
             <div className="grid grid-cols-2 gap-3">
-              <span className="text-xs font-semibold text-foreground">Date d'expiration</span>
+              <span className="text-xs font-semibold text-foreground">Date d'expiration*</span>
               <input
                 type="text"
                 placeholder="MM / AA"

@@ -1,5 +1,5 @@
 export type ScreenKey =
-  | "home" | "login" | "quiz" | "result" | "reco"
+  | "home" | "login" | "register" | "quiz" | "result" | "reco"
   | "challenge" | "progress" | "leaderboard"
   | "reward" | "shop" | "confirm" | "checkoutInfos" | "checkoutPayment";
 

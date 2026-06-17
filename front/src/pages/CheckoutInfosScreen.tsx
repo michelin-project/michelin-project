@@ -86,7 +86,7 @@ export function CheckoutInfosScreen({
 
               {/* Prénom */}
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-foreground">Prénom</span>
+                <span className="text-xs font-semibold text-foreground">Prénom*</span>
                 <input
                   type="text"
                   placeholder="Ex : Marie"
@@ -102,7 +102,7 @@ export function CheckoutInfosScreen({
 
               {/* Nom */}
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-foreground">Nom</span>
+                <span className="text-xs font-semibold text-foreground">Nom*</span>
                 <input
                   type="text"
                   placeholder="Ex : Dupont"
@@ -120,7 +120,7 @@ export function CheckoutInfosScreen({
 
             {/* Email */}
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-foreground">Email</span>
+              <span className="text-xs font-semibold text-foreground">Email*</span>
               <input
                 type="email"
                 placeholder="Ex : marie.dupont@gmail.com"
@@ -147,7 +147,7 @@ export function CheckoutInfosScreen({
 
             {/* Adresse */}
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-foreground">Adresse</span>
+              <span className="text-xs font-semibold text-foreground">Adresse*</span>
               <input
                 type="text"
                 placeholder="Ex : 12 rue Victor Hugo"
@@ -165,7 +165,7 @@ export function CheckoutInfosScreen({
 
               {/* Code postal */}
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-foreground">Code postal</span>
+                <span className="text-xs font-semibold text-foreground">Code postal*</span>
                 <input
                   type="text"
                   placeholder="Ex : 75001"
@@ -181,7 +181,7 @@ export function CheckoutInfosScreen({
 
               {/* Ville */}
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-foreground">Ville</span>
+                <span className="text-xs font-semibold text-foreground">Ville*</span>
                 <input
                   type="text"
                   placeholder="Ex : Paris"
@@ -199,7 +199,7 @@ export function CheckoutInfosScreen({
 
             {/* Pays */}
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-foreground">Pays</span>
+              <span className="text-xs font-semibold text-foreground">Pays*</span>
               <div className="w-full px-4 py-3.5 rounded-2xl bg-muted text-sm text-foreground">
                 France
               </div>
