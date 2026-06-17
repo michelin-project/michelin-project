@@ -14,6 +14,7 @@ export class AuthController {
 
   @Post('register')
   signUp(@Body() signUpDto: Record<string, any>) {
-    return this.authService.signUp(signUpDto.email, signUpDto.password);
+    const { email, password, ...extraData } = signUpDto;
+    return this.authService.signUp(email, password, extraData);
   }
 }

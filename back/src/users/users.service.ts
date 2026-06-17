@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
-
-export type User = any;
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-  // Faux utilisateur pour simuler la base de données
-  private readonly users = [
-    {
-      userId: 1,
-      email: 'vous@exemple.fr',
-      password: 'password123', // En production, on utilisera bcrypt pour hasher le mot de passe
-      name: 'Marc V.',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  async findOne(email: string): Promise<User | undefined> {
-    return this.users.find(user => user.email === email);
+  async findOne(email: string): Promise<User | null> {
+    return this.usersRepository.findOneBy({ email });
   }
 
-  async create(user: any): Promise<User> {
-    const newUser = { userId: this.users.length + 1, ...user };
-    this.users.push(newUser);
-    return newUser;
+  async create(userData: Partial<User>): Promise<User> {
+    const newUser = this.usersRepository.create(userData);
+    return this.usersRepository.save(newUser);
   }
 }
