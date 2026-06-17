@@ -115,7 +115,7 @@ const RETAILERS = [
 
 /* ---------- Root ---------- */
 
-function App() {
+export function App() {
   const [screen, setScreen] = useState<ScreenKey>("home");
   const [answers, setAnswers] = useState<Answers>({});
   const [selectedTireId, setSelectedTireId] = useState<string>(TIRES[0].id);
@@ -433,7 +433,7 @@ function Quiz({ onDone, onBack }: { onDone: (a: Answers) => void; onBack: () => 
 
 /* ---------- Result ---------- */
 
-function deriveArchetype(a: Answers) {
+export function deriveArchetype(a: Answers) {
   const name =
     a.priority === "vitesse" ? "Le Performeur" :
     a.priority === "adherence" ? "L’Aventurier" :
