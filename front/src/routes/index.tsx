@@ -20,6 +20,7 @@ import { Confirm } from "../pages/Confirm";
 import { CheckoutInfosScreen } from "../pages/CheckoutInfosScreen";
 import { CheckoutPaymentScreen } from "../pages/CheckoutPaymentScreen";
 import { Shop } from "../pages/Shop";
+import { Account } from "../pages/Account";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -54,6 +55,10 @@ export function App() {
   const archetype = useMemo(() => deriveArchetype(answers), [answers]);
   const selectedTire = TIRES.find((t) => t.id === selectedTireId) ?? TIRES[0];
 
+    const [orders, setOrders] = useState<
+      { id: string; date: string; tire: string; price: number }[]
+    >([]);
+    
   useEffect(() => {
     if (screen === "result" || screen === "reco") {
       const id =
@@ -231,15 +236,40 @@ export function App() {
           {/* CHECKOUT PAYMENT */}
           {screen === "checkoutPayment" && (
             <CheckoutPaymentScreen
-              onPay={() => setScreen("confirm")}
+              onPay={() => {
+                setOrders((prev) => [
+                  ...prev,
+                  {
+                    id: crypto.randomUUID(),
+                    date: new Date().toLocaleDateString("fr-FR"),
+                    tire: selectedTire.name,
+                    price: selectedTire.price,
+                  },
+                ]);
+                setScreen("confirm");
+              }}
+
               onBack={() => setScreen("checkoutInfos")}
             />
           )}
 
           {/* CONFIRM */}
           {screen === "confirm" && (
-            <Confirm onRestart={() => setScreen("progress")} />
+            <Confirm
+              onRestart={() => setScreen("progress")}
+              onAccount={() => setScreen("account")}
+            />
           )}
+
+          {/* ACCOUNT */}
+          {screen === "account" && (
+            <Account
+              onBack={() => setScreen("home")}
+              orders={orders}
+            />
+          )}
+
+
         </div>
 
         {/* BOTTOM NAV */}

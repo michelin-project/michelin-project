@@ -1,4 +1,10 @@
-export function Confirm({ onRestart }: { onRestart: () => void }) {
+export function Confirm({
+  onRestart,
+  onAccount,
+}: {
+  onRestart: () => void;
+  onAccount: () => void;
+}) {
   return (
     <div className="px-6 pt-10 pb-10 text-center">
       <div className="mx-auto w-20 h-20 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[var(--shadow-elevated)]">
@@ -30,6 +36,13 @@ export function Confirm({ onRestart }: { onRestart: () => void }) {
           Activer le suivi intelligent
         </button>
       </div>
+
+      <button
+        onClick={onAccount}
+        className="mt-6 w-full h-12 rounded-2xl bg-primary border border-border font-medium text-sm text-white"
+      >
+        Mon compte
+      </button>
 
       <button onClick={onRestart} className="mt-6 w-full h-12 rounded-2xl bg-surface border border-border font-medium text-sm">
         Continuer mes challenges
