@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+
+# MongoDB
+docker/mongo-data/
+
+# CSV sensibles (téléchargements)
+*.csv
+!docker/mongo-init/catalog.csv
