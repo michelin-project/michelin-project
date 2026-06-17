@@ -18,8 +18,6 @@ export const Route = createFileRoute("/")({
   component: App,
 });
 
-/* ---------- Types & data ---------- */
-
 type ScreenKey =
   | "home" | "login" | "quiz" | "result" | "reco"
   | "challenge" | "progress" | "leaderboard"
@@ -113,9 +111,7 @@ const RETAILERS = [
   { name: "Mantel", delivery: "3-5 jours", note: "Premium" },
 ];
 
-/* ---------- Root ---------- */
-
-export function App() {
+function App() {
   const [screen, setScreen] = useState<ScreenKey>("home");
   const [answers, setAnswers] = useState<Answers>({});
   const [selectedTireId, setSelectedTireId] = useState<string>(TIRES[0].id);
@@ -123,11 +119,11 @@ export function App() {
   const [stravaLinked, setStravaLinked] = useState(false);
   const [challengeJoined, setChallengeJoined] = useState(false);
   const [shopPromo, setShopPromo] = useState(false);
+  const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("home");
 
   const archetype = useMemo(() => deriveArchetype(answers), [answers]);
   const selectedTire = TIRES.find(t => t.id === selectedTireId) ?? TIRES[0];
 
-  // pick best tire from answers
   useEffect(() => {
     if (screen === "result" || screen === "reco") {
       const id =
@@ -142,9 +138,9 @@ export function App() {
     <div className="min-h-dvh w-full flex justify-center bg-surface-2">
       <div className="w-full max-w-md bg-background flex flex-col shadow-[var(--shadow-elevated)] border-x border-border">
         <div className="flex-1 scroll-area">
-          {screen === "home" && <Home onStart={() => setScreen("quiz")} onLogin={() => setScreen("login")} authed={authed} />}
-          {screen === "login" && <Login onBack={() => setScreen("home")} onDone={() => { setAuthed(true); setScreen("home"); }} />}
-          {screen === "quiz" && <Quiz onDone={(a) => { setAnswers(a); setScreen("result"); }} onBack={() => setScreen("home")} />}
+          {screen === "home" && <Home onStart={() => setScreen("quiz")} onLogin={() => { setLoginRedirect("home"); setScreen("login"); }} authed={authed} />}
+          {screen === "login" && <Login onBack={() => setScreen("home")} onSkip={() => setScreen(loginRedirect)} onDone={() => { setAuthed(true); setScreen(loginRedirect); }} />}
+          {screen === "quiz" && <Quiz onDone={(a) => { setAnswers(a); if (authed) { setScreen("result"); } else { setLoginRedirect("result"); setScreen("login"); } }} onBack={() => setScreen("home")} />}
           {screen === "result" && <Result archetype={archetype} answers={answers} onNext={() => setScreen("reco")} />}
           {screen === "reco" && (
             <Reco
@@ -180,13 +176,11 @@ export function App() {
           )}
           {screen === "confirm" && <Confirm onRestart={() => setScreen("progress")} />}
         </div>
-        <BottomNav current={screen} onNav={setScreen} />
+        {!["home", "login", "quiz"].includes(screen) && <BottomNav current={screen} onNav={setScreen} />}
       </div>
     </div>
   );
 }
-
-/* ---------- Shared chrome ---------- */
 
 function BottomNav({ current, onNav }: { current: ScreenKey; onNav: (s: ScreenKey) => void }) {
   const items: { key: ScreenKey; label: string; icon: string }[] = [
@@ -227,8 +221,6 @@ function MichelinMark({ className = "" }: { className?: string }) {
     </div>
   );
 }
-
-/* ---------- Home ---------- */
 
 function Home({ onStart, onLogin, authed }: { onStart: () => void; onLogin: () => void; authed: boolean }) {
   return (
@@ -276,30 +268,76 @@ function Home({ onStart, onLogin, authed }: { onStart: () => void; onLogin: () =
   );
 }
 
-/* ---------- Login ---------- */
+function Login({ onBack, onSkip, onDone }: { onBack: () => void; onSkip: () => void; onDone: () => void }) {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-function Login({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const endpoint = isLogin ? "/auth/login" : "/auth/register";
+      const res = await fetch(`http://localhost:3000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Une erreur est survenue");
+      }
+
+      const data = await res.json();
+      // Stocker le jeton de sécurité localement
+      if (data.access_token) {
+        localStorage.setItem("michelin_token", data.access_token);
+      }
+      onDone();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="px-6 pt-4 pb-10">
-      <button onClick={onBack} className="text-sm text-muted-foreground mb-6 flex items-center gap-1.5">
+      <button type="button" onClick={onBack} className="text-sm text-muted-foreground mb-6 flex items-center gap-1.5">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><path d="M15 18l-6-6 6-6"/></svg>
         Retour
       </button>
       <MichelinMark />
-      <h1 className="mt-8 text-3xl font-black tracking-tight">Connexion</h1>
+      <h1 className="mt-8 text-3xl font-black tracking-tight">{isLogin ? "Connexion" : "Inscription"}</h1>
       <p className="mt-2 text-sm text-muted-foreground">La création de compte est optionnelle. Elle est requise pour rejoindre les challenges Strava.</p>
 
-      <div className="mt-8 space-y-3">
+      <form onSubmit={handleSubmit} className="mt-8 space-y-3">
+        {error && (
+          <div className="p-3 text-[13px] font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-xl">
+            {error}
+          </div>
+        )}
         <label className="block">
           <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Email</span>
-          <input type="email" placeholder="vous@exemple.fr" className="mt-1 w-full h-12 rounded-xl border border-border bg-surface px-4 text-sm focus:outline-none focus:border-primary" />
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="vous@exemple.fr" className="mt-1 w-full h-12 rounded-xl border border-border bg-surface px-4 text-sm focus:outline-none focus:border-primary" />
         </label>
         <label className="block">
           <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Mot de passe</span>
-          <input type="password" placeholder="••••••••" className="mt-1 w-full h-12 rounded-xl border border-border bg-surface px-4 text-sm focus:outline-none focus:border-primary" />
+          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="mt-1 w-full h-12 rounded-xl border border-border bg-surface px-4 text-sm focus:outline-none focus:border-primary" />
         </label>
-        <button onClick={onDone} className="w-full h-13 mt-3 h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-sm">
-          Se connecter
+        <button type="submit" disabled={loading} className="w-full mt-3 h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50">
+          {loading ? "Chargement..." : (isLogin ? "Se connecter" : "S'inscrire")}
+        </button>
+      </form>
+
+      <div className="mt-4 text-center">
+        <button type="button" onClick={() => { setIsLogin(!isLogin); setError(""); }} className="text-sm text-primary font-medium">
+          {isLogin ? "Pas encore de compte ? S'inscrire" : "Déjà un compte ? Se connecter"}
         </button>
       </div>
 
@@ -308,22 +346,20 @@ function Login({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
       </div>
 
       <div className="space-y-2">
-        <button onClick={onDone} className="w-full h-12 rounded-xl border border-border bg-background font-medium text-sm flex items-center justify-center gap-2">
+        <button type="button" onClick={onDone} className="w-full h-12 rounded-xl border border-border bg-background font-medium text-sm flex items-center justify-center gap-2">
           <span className="w-4 h-4 rounded-sm bg-[oklch(0.65_0.18_30)]" /> Continuer avec Apple
         </button>
-        <button onClick={onDone} className="w-full h-12 rounded-xl bg-[#FC4C02] text-white font-semibold text-sm flex items-center justify-center gap-2">
+        <button type="button" onClick={onDone} className="w-full h-12 rounded-xl bg-[#FC4C02] text-white font-semibold text-sm flex items-center justify-center gap-2">
           Connecter avec Strava
         </button>
       </div>
 
-      <button onClick={onBack} className="block mx-auto mt-8 text-sm text-primary font-medium">
+      <button type="button" onClick={onSkip} className="block mx-auto mt-8 text-sm text-primary font-medium">
         Continuer sans compte
       </button>
     </div>
   );
 }
-
-/* ---------- Quiz ---------- */
 
 const QUIZ_STEPS = [
   {
