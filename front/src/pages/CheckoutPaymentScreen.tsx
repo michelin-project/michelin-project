@@ -32,15 +32,16 @@ export function CheckoutPaymentScreen({
 
   const validateForm = () => {
     const newErrors = {
-      cardHolder: formData.cardHolder.trim() === "",
-      cardNumber: formData.cardNumber.trim() === "",
-      expiryDate: formData.expiryDate.trim() === "",
-      cvc: formData.cvc.trim() === "",
+        cardHolder: !isValidName(formData.cardHolder),
+        cardNumber: formData.cardNumber.replace(/\s/g, "").length !== 16,
+        expiryDate: !isValidExpiry(formData.expiryDate),
+        cvc: !isValidCVC(formData.cvc),
     };
 
     setErrors(newErrors);
     return !Object.values(newErrors).includes(true);
   };
+
 
   const handlePay = () => {
     if (!agreed) return;
@@ -48,8 +49,53 @@ export function CheckoutPaymentScreen({
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    let formatted = value;
+
+    if (field === "cardNumber") {
+        formatted = formatCardNumber(value);
+    }
+
+    if (field === "expiryDate") {
+        formatted = formatExpiry(value);
+    }
+
+    if (field === "cvc") {
+        formatted = value.replace(/\D/g, "").slice(0, 3);
+    }
+
+    setFormData((prev) => ({ ...prev, [field]: formatted }));
   };
+
+
+  // Nettoyage + formatage du numéro de carte
+  const formatCardNumber = (value: string) => {
+    return value
+      .replace(/\D/g, "")        // garde uniquement les chiffres
+      .slice(0, 16)              // max 16 chiffres
+      .replace(/(.{4})/g, "$1 "); // ajoute un espace tous les 4 chiffres
+  };
+
+  // Formatage automatique MM/AA
+  const formatExpiry = (value: string) => {
+    const cleaned = value.replace(/\D/g, "").slice(0, 4);
+    if (cleaned.length <= 2) return cleaned;
+    return cleaned.slice(0, 2) + "/" + cleaned.slice(2);
+ };
+
+  // Validation expiration (MM/AA)
+  const isValidExpiry = (value: string) => {
+    if (!/^\d{2}\/\d{2}$/.test(value)) return false;
+    const [mm, yy] = value.split("/").map(Number);
+    return mm >= 1 && mm <= 12;
+  };
+
+  // Validation CVC (3 chiffres)
+  const isValidCVC = (value: string) => /^\d{3}$/.test(value);
+
+  // Validation nom (lettres + espaces)
+  const isValidName = (value: string) =>
+    /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/.test(value.trim());
+
 
   return (
     <div className="flex flex-col h-full bg-background">
