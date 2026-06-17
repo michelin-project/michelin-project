@@ -14,19 +14,19 @@ export class AuthService {
     if (user?.password !== pass) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
-    const payload = { sub: user.userId, email: user.email };
+    const payload = { sub: user.id, email: user.email };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
-  async signUp(email: string, pass: string): Promise<{ access_token: string }> {
+  async signUp(email: string, pass: string, extraData: any = {}): Promise<{ access_token: string }> {
     const existingUser = await this.usersService.findOne(email);
     if (existingUser) {
       throw new UnauthorizedException('Cet email est déjà utilisé');
     }
-    const newUser = await this.usersService.create({ email, password: pass, name: 'Nouveau Cycliste' });
-    const payload = { sub: newUser.userId, email: newUser.email };
+    const newUser = await this.usersService.create({ email, password: pass, name: 'Nouveau Cycliste', ...extraData });
+    const payload = { sub: newUser.id, email: newUser.email };
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 }
