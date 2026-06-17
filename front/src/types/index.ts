@@ -1,7 +1,7 @@
 export type ScreenKey =
   | "home" | "login" | "register" | "quiz" | "result" | "reco"
   | "challenge" | "progress" | "leaderboard"
-  | "reward" | "shop" | "confirm" | "checkoutInfos" | "checkoutPayment";
+  | "reward" | "recommendation" | "shop" | "confirm" | "checkoutInfos" | "checkoutPayment";
 
 export type Answers = {
   bike?: "route" | "gravel" | "vtt" | "urbain";

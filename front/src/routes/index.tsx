@@ -15,10 +15,11 @@ import { Challenge } from "../pages/Challenge";
 import { Progress } from "../pages/Progress";
 import { Leaderboard } from "../pages/Leaderboard";
 import { Reward } from "../pages/Reward";
-import { Shop } from "../pages/Shop";
+import { Recommendation } from "../pages/Recommendation";
 import { Confirm } from "../pages/Confirm";
 import { CheckoutInfosScreen } from "../pages/CheckoutInfosScreen";
 import { CheckoutPaymentScreen } from "../pages/CheckoutPaymentScreen";
+import { Shop } from "../pages/Shop";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,7 +48,7 @@ export function App() {
   const [authed, setAuthed] = useState(false);
   const [stravaLinked, setStravaLinked] = useState(false);
   const [challengeJoined, setChallengeJoined] = useState(false);
-  const [shopPromo, setShopPromo] = useState(false);
+  const [recommendationPromo, setRecommendationPromo] = useState(false);
   const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("home");
 
   const archetype = useMemo(() => deriveArchetype(answers), [answers]);
@@ -137,7 +138,7 @@ export function App() {
               selectedId={selectedTireId}
               archetype={archetype}
               onJoin={() => setScreen("challenge")}
-              onSkipBuy={() => setScreen("shop")}
+              onSkipBuy={() => setScreen("recommendation")}
             />
           )}
 
@@ -175,17 +176,17 @@ export function App() {
           {screen === "reward" && (
             <Reward
               onSee={() => {
-                setShopPromo(true);
-                setScreen("shop");
+                setRecommendationPromo(true);
+                setScreen("recommendation");
               }}
             />
           )}
 
-          {/* SHOP */}
-          {screen === "shop" && (
-            <Shop
+          {/* RECOMMENDATION */}
+          {screen === "recommendation" && (
+            <Recommendation
               tire={selectedTire}
-              promoActive={shopPromo || challengeJoined}
+              promoActive={recommendationPromo || challengeJoined}
               onActivatePromo={() => {
                 setScreen("challenge");
               }}
@@ -200,11 +201,30 @@ export function App() {
             />
           )}
 
+          {/* SHOP */}
+          {screen === "shop" && (
+            <Shop
+              tire={selectedTire}
+              promoActive={recommendationPromo || challengeJoined}
+              onActivatePromo={() => setScreen("challenge")}
+              onSelect={(id) => setSelectedTireId(id)}
+              onBuy={() => {
+                if (!authed) {
+                  setLoginRedirect("checkoutInfos");
+                  setScreen("login");
+                } else {
+                  setScreen("checkoutInfos");
+                }
+              }}
+            />
+          )}
+
+
           {/* CHECKOUT INFOS */}
           {screen === "checkoutInfos" && (
             <CheckoutInfosScreen
               onContinue={() => setScreen("checkoutPayment")}
-              onBack={() => setScreen("shop")}
+              onBack={() => setScreen("recommendation")}
             />
           )}
 

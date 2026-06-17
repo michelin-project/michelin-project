@@ -1,85 +1,121 @@
-import type { Tire } from "../types/index";
-import { RETAILERS } from "../data/index";
+import { useState, useMemo } from "react";
+import { Search, ArrowUpDown, Star } from "lucide-react";
+import { TIRES } from "../data/index";
 
 export function Shop({
-  tire, promoActive, onActivatePromo, onBuy,
-}: { tire: Tire; promoActive: boolean; onActivatePromo: () => void; onBuy: () => void }) {
-  const discount = promoActive ? 0.15 : 0;
-  const finalPrice = tire.price * (1 - discount);
+  tire,
+  promoActive,
+  onActivatePromo,
+  onBuy,
+  onSelect,
+}: {
+  tire: any;
+  promoActive: boolean;
+  onActivatePromo: () => void;
+  onBuy: () => void;
+  onSelect: (id: string) => void;
+}) {
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc">("asc");
+
+  // Filtrage simple basé sur ton format TIRES
+  const items = useMemo(() => {
+    const ql = q.trim().toLowerCase();
+    return TIRES.filter((t) => {
+      if (!ql) return true;
+      const hay = `${t.name} ${t.family} ${t.tag}`.toLowerCase();
+      return hay.includes(ql);
+    }).sort((a, b) => (sort === "asc" ? a.price - b.price : b.price - a.price));
+  }, [q, sort]);
 
   return (
-    <div className="pb-10">
-      <div className="px-6 pt-6">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">Boutique</div>
-        <h1 className="mt-1 text-[28px] font-black tracking-tight">Acheter en 1 clic</h1>
+    <div className="flex flex-col gap-4 px-5 pt-3 pb-10">
+
+      {/* Barre de recherche */}
+      <div className="m-card flex items-center gap-2 px-4 py-2">
+        <Search className="h-4 w-4 text-muted-foreground" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value.slice(0, 60))}
+          placeholder="Nom ou référence"
+          className="w-full bg-transparent text-sm outline-none"
+        />
       </div>
 
-      <div className="mt-5 mx-4 rounded-3xl border border-border overflow-hidden">
-        <div className="h-48 bg-surface flex items-center justify-center">
-          <img src={tire.image} alt={tire.name} className="h-full w-auto object-contain" width={1024} height={1024} loading="lazy" />
-        </div>
-        <div className="p-5">
-          <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">{tire.family}</div>
-          <div className="font-black text-xl tracking-tight mt-0.5">Michelin {tire.name}</div>
+      {/* Tri */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
+          className="chip"
+        >
+          <ArrowUpDown className="h-3 w-3" />
+          Prix {sort === "asc" ? "↑" : "↓"}
+        </button>
 
-          <div className="mt-4 flex items-end gap-3">
-            <div className="text-3xl font-black tracking-tight">{finalPrice.toFixed(2)} €</div>
-            {promoActive && (
-              <>
-                <div className="text-base text-muted-foreground line-through">{tire.price.toFixed(2)} €</div>
-                <div className="rounded-full bg-michelin-yellow text-ink text-[11px] font-bold px-2 py-0.5">−15%</div>
-              </>
-            )}
-          </div>
+        <div className="ml-auto text-xs text-muted-foreground">
+          {items.length} résultats
         </div>
       </div>
 
-      {!promoActive && (
-        <div className="mx-4 mt-4 rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4">
-          <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground grid place-items-center font-black">%</div>
-            <div className="flex-1">
-              <div className="font-bold text-sm">Économisez 15% supplémentaires</div>
-              <p className="mt-0.5 text-[12px] text-ink-soft leading-snug">
-                Rejoignez le challenge Strava « 200 km en mai » et débloquez votre code promo Michelin.
-              </p>
-              <button onClick={onActivatePromo} className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground text-xs font-semibold px-4 py-2">
-                Rejoindre & débloquer −15%
-              </button>
+      {/* Liste des pneus */}
+      <div className="grid grid-cols-2 gap-3">
+        {items.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => onSelect(t.id)}
+            className="m-card flex flex-col overflow-hidden text-left"
+          >
+            <div className="grid h-32 place-items-center bg-secondary">
+              <img
+                src={t.image}
+                alt={t.name}
+                loading="lazy"
+                className="h-full w-full object-contain p-2"
+              />
             </div>
-          </div>
+
+            <div className="flex flex-col gap-1 p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-michelin-blue">
+                  {t.family}
+                </span>
+
+                <span className="flex items-center gap-0.5 text-[10px] font-bold">
+                  <Star className="h-3 w-3 fill-michelin-yellow text-michelin-yellow" />
+                  {t.match}
+                </span>
+              </div>
+
+              <div className="truncate text-sm font-bold">{t.name}</div>
+
+              <div className="text-sm font-black text-michelin-blue">
+                {t.price.toFixed(2)} €
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {items.length === 0 && (
+        <div className="m-card p-8 text-center text-sm text-muted-foreground">
+          Aucun pneu ne correspond à ces critères.
         </div>
       )}
 
-      <div className="mx-4 mt-6">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Choisissez votre revendeur</div>
-        <div className="space-y-2">
-          {RETAILERS.map((r, i) => (
-            <button
-              key={r.name}
-              onClick={onBuy}
-              className={`w-full flex items-center justify-between rounded-2xl border p-4 transition
-                ${i === 0 ? "border-primary bg-primary/5" : "border-border bg-background"}`}
-            >
-              <div className="text-left">
-                <div className="font-bold text-sm">{r.name}</div>
-                <div className="text-[11px] text-muted-foreground">{r.delivery} · {r.note}</div>
-              </div>
-              <div className="text-right">
-                <div className="font-black text-sm">{finalPrice.toFixed(2)} €</div>
-                <div className="text-[11px] text-primary font-semibold">Acheter →</div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <button onClick={onBuy} className="mx-4 mt-6 w-[calc(100%-2rem)] h-14 rounded-2xl bg-primary text-primary-foreground font-semibold text-[15px] shadow-[var(--shadow-elevated)]">
-        Acheter maintenant — {finalPrice.toFixed(2)} €
+      {/* Bouton Acheter */}
+      <button
+        onClick={onBuy}
+        className="w-full h-12 rounded-xl bg-michelin-blue text-white font-bold mt-4"
+      >
+        Acheter ce pneu
       </button>
-      <p className="text-center text-[11px] text-muted-foreground mt-3 px-6">
-        Paiement sécurisé via le revendeur. Garantie Michelin 2 ans.
-      </p>
+
+      {/* Promo */}
+      {promoActive && (
+        <div className="text-center text-sm font-bold text-michelin-blue mt-2">
+          Promo Challenge Strava activée !
+        </div>
+      )}
     </div>
   );
 }
