@@ -114,12 +114,7 @@ export function App() {
             <Quiz
               onDone={(a) => {
                 setAnswers(a);
-                if (authed) {
-                  setScreen("result");
-                } else {
-                  setLoginRedirect("result");
-                  setScreen("login");
-                }
+                setScreen("result");
               }}
               onBack={() => setScreen("home")}
             />
@@ -194,7 +189,14 @@ export function App() {
               onActivatePromo={() => {
                 setScreen("challenge");
               }}
-              onBuy={() => setScreen("checkoutInfos")}
+              onBuy={() => {
+                if (!authed) {
+                  setLoginRedirect("checkoutInfos");
+                  setScreen("login");
+                } else {
+                  setScreen("checkoutInfos");
+                }
+              }}
             />
           )}
 
