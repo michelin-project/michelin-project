@@ -3,9 +3,7 @@ import { Search, ArrowUpDown, Star } from "lucide-react";
 import { TIRES } from "../data/index";
 
 export function Shop({
-  tire,
   promoActive,
-  onActivatePromo,
   onBuy,
   onSelect,
 }: {
