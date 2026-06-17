@@ -111,7 +111,7 @@ const RETAILERS = [
   { name: "Mantel", delivery: "3-5 jours", note: "Premium" },
 ];
 
-function App() {
+export function App() {
   const [screen, setScreen] = useState<ScreenKey>("home");
   const [answers, setAnswers] = useState<Answers>({});
   const [selectedTireId, setSelectedTireId] = useState<string>(TIRES[0].id);

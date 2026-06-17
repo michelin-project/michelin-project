@@ -7,19 +7,29 @@ import { App } from '../../src/routes/index'
 
 // Tests d'intégration fonctionnels pour le flux principal de l'application.
 // Ces tests simulent la navigation utilisateur dans l'expérience Michelin.
+
 describe('Front route App (functional)', () => {
+  async function startQuiz(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(screen.getByRole('button', { name: /commencer l’analyse/i }))
+    expect(await screen.findByRole('heading', { name: /Quel est votre vélo/i })).toBeInTheDocument()
+  }
+
+  async function answerQuizStep(user: ReturnType<typeof userEvent.setup>, label: RegExp, nextHeading: RegExp) {
+    await user.click(screen.getByRole('button', { name: label }))
+    expect(await screen.findByRole('heading', { name: nextHeading })).toBeInTheDocument()
+  }
+
+  async function skipLogin(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(screen.getByRole('button', { name: /continuer sans compte/i }))
+  }
+
   it('navigue de l’accueil au quiz et passe à la deuxième étape', async () => {
     // Simule le lancement du quiz depuis l'écran d'accueil et vérifie que la deuxième question apparaît.
     const user = userEvent.setup()
     render(<App />)
 
-    const startButton = screen.getByRole('button', { name: /commencer l’analyse/i })
-    await user.click(startButton)
-    expect(screen.getByRole('heading', { name: /Quel est votre vélo/i })).toBeInTheDocument()
-
-    const routeOption = screen.getByRole('button', { name: /route/i })
-    await user.click(routeOption)
-    expect(await screen.findByRole('heading', { name: /Votre priorité/i })).toBeInTheDocument()
+    await startQuiz(user)
+    await answerQuizStep(user, /route/i, /Votre priorité/i)
   })
 
   it('ouvre le panneau de connexion et revient à l’accueil en cliquant sur retour', async () => {
@@ -27,13 +37,11 @@ describe('Front route App (functional)', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const loginButton = screen.getByRole('button', { name: /se connecter/i })
-    await user.click(loginButton)
+    await user.click(screen.getByRole('button', { name: /se connecter/i }))
     expect(screen.getByRole('heading', { name: /Connexion/i })).toBeInTheDocument()
 
-    const backButton = screen.getByRole('button', { name: /retour/i })
-    await user.click(backButton)
-    expect(screen.getByRole('button', { name: /commencer l’analyse/i })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /retour/i }))
+    expect(await screen.findByRole('button', { name: /commencer l’analyse/i })).toBeInTheDocument()
   })
 
   it('termine le quiz et affiche la page de résultat Ride DNA', async () => {
@@ -41,17 +49,15 @@ describe('Front route App (functional)', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: /commencer l’analyse/i }))
-    await user.click(screen.getByRole('button', { name: /route/i }))
-    expect(await screen.findByRole('heading', { name: /Votre priorité/i })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: /vitesse/i }))
-    expect(await screen.findByRole('heading', { name: /Kilométrage hebdo/i })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: /50–100 km/i }))
-    expect(await screen.findByRole('heading', { name: /Type de terrain/i })).toBeInTheDocument()
-
+    await startQuiz(user)
+    await answerQuizStep(user, /route/i, /Votre priorité/i)
+    await answerQuizStep(user, /vitesse/i, /Kilométrage hebdo/i)
+    await answerQuizStep(user, /50–100 km/i, /Type de terrain/i)
     await user.click(screen.getByRole('button', { name: /asphalte/i }))
+    expect(await screen.findByRole('heading', { name: /Connexion/i })).toBeInTheDocument()
+
+    await skipLogin(user)
+
     expect(await screen.findByText(/Votre Ride DNA/i)).toBeInTheDocument()
     expect(screen.getByText(/Votre profil en bref/i)).toBeInTheDocument()
   })
@@ -61,19 +67,14 @@ describe('Front route App (functional)', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: /commencer l’analyse/i }))
-    await user.click(screen.getByRole('button', { name: /route/i }))
-    expect(await screen.findByRole('heading', { name: /Votre priorité/i })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: /vitesse/i }))
-    expect(await screen.findByRole('heading', { name: /Kilométrage hebdo/i })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: /50–100 km/i }))
-    expect(await screen.findByRole('heading', { name: /Type de terrain/i })).toBeInTheDocument()
-
+    await startQuiz(user)
+    await answerQuizStep(user, /route/i, /Votre priorité/i)
+    await answerQuizStep(user, /vitesse/i, /Kilométrage hebdo/i)
+    await answerQuizStep(user, /50–100 km/i, /Type de terrain/i)
     await user.click(screen.getByRole('button', { name: /asphalte/i }))
-    expect(await screen.findByText(/Votre Ride DNA/i)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /Connexion/i })).toBeInTheDocument()
 
+    await skipLogin(user)
     await user.click(screen.getByRole('button', { name: /Voir mon pneu Michelin/i }))
     expect(await screen.findByText(/Recommandation/i)).toBeInTheDocument()
 
