@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { TiresModule } from './tires/tires.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { ProductsModule } from './products/products.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     UsersModule,
     TiresModule,
     LeaderboardModule,
+    ProductsModule,
+    RecommendationsModule,
   ],
   controllers: [AppController],
   providers: [],

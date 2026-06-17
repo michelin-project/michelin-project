@@ -2,7 +2,7 @@ import tirePower from "../assets/tire-power.jpg";
 import tireGravel from "../assets/tire-gravel.jpg";
 import tireMtb from "../assets/tire-mtb.jpg";
 import tireUrban from "../assets/tire-urban.jpg";
-import type { Tire } from "../types/index";
+import type { Tire, Answers } from "../types/index";
 
 export const TIRES: Tire[] = [
   {
@@ -66,6 +66,37 @@ export const TIRES: Tire[] = [
     tag: "Le Cycliste Contrôle",
   },
 ];
+
+export const BIKE_IMAGE = {
+  route: tirePower,
+  gravel: tireGravel,
+  vtt: tireMtb,
+  urbain: tireUrban,
+} as const;
+
+// Le catalogue n'expose aucune URL d'image : on retombe sur les assets bundlés,
+// par mot-clé de la famille/gamme puis par catégorie de vélo.
+const IMAGE_BY_RANGE: { test: RegExp; src: string }[] = [
+  { test: /gravel|adventure/, src: tireGravel },
+  { test: /wild|country|force|jet|pilot|enduro|slope|pump|mud/, src: tireMtb },
+  { test: /protek|city|dynamic|world|lithion|urban|trekking/, src: tireUrban },
+  { test: /power|pro5|road|cup|season|protection|trial/, src: tirePower },
+];
+
+/** Résout l'image d'un pneu recommandé côté front (assets bundlés). */
+export function resolveTireImage(
+  tire: Pick<Tire, "name" | "family">,
+  bike?: Answers["bike"],
+): string {
+  // Tous les pneus d'une même reco partagent le filtre `bike` : l'image de la
+  // catégorie de vélo est donc le meilleur discriminateur (un pneu route reste
+  // une image route, y compris les modèles "Lithion"/"Power" qui tomberaient
+  // sinon sur l'image urbaine via les mots-clés).
+  if (bike && BIKE_IMAGE[bike]) return BIKE_IMAGE[bike];
+  const hay = `${tire.family} ${tire.name}`.toLowerCase();
+  for (const r of IMAGE_BY_RANGE) if (r.test.test(hay)) return r.src;
+  return tirePower;
+}
 
 export const RETAILERS = [
   { name: "Alltricks", delivery: "Livraison 24h", note: "Stock dispo" },

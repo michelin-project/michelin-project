@@ -1,5 +1,4 @@
 import type { Answers } from "../types/index";
-import type { ReturnType } from "../lib/app-utils";
 import { deriveArchetype } from "../lib/app-utils";
 import { Tag, RadarChart } from "../lib/shared-components";
 
