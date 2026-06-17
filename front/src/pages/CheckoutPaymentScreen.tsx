@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, CreditCard, Check, Lock, Shield } from "lucide-react";
-import { PhoneFrame, StatusBar, CheckoutStepper } from "../lib/shared-components";
+import { CheckoutStepper } from "../lib/shared-components";
 
 export function CheckoutPaymentScreen({
   onPay,
@@ -24,14 +24,12 @@ export function CheckoutPaymentScreen({
     cvc: false,
   });
 
-  // Vérifie si les champs sont remplis (pour désactiver le bouton)
   const isFormFilled =
     formData.cardHolder.trim() !== "" &&
     formData.cardNumber.trim() !== "" &&
     formData.expiryDate.trim() !== "" &&
     formData.cvc.trim() !== "";
 
-  // Validation finale (affiche les bordures rouges)
   const validateForm = () => {
     const newErrors = {
       cardHolder: formData.cardHolder.trim() === "",
@@ -41,16 +39,12 @@ export function CheckoutPaymentScreen({
     };
 
     setErrors(newErrors);
-
     return !Object.values(newErrors).includes(true);
   };
 
   const handlePay = () => {
     if (!agreed) return;
-
-    if (validateForm()) {
-      onPay();
-    }
+    if (validateForm()) onPay();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -58,10 +52,9 @@ export function CheckoutPaymentScreen({
   };
 
   return (
-    <PhoneFrame>
-      <StatusBar />
-
-      <div className="flex items-center px-5 py-3 border-b border-border flex-shrink-0">
+    <div className="flex flex-col h-full bg-background">
+      {/* HEADER */}
+      <div className="flex items-center px-5 py-3 border-b border-border">
         <button onClick={onBack} className="p-1 -ml-1">
           <ChevronLeft size={20} />
         </button>
@@ -72,7 +65,6 @@ export function CheckoutPaymentScreen({
       <CheckoutStepper step={2} />
 
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 space-y-5">
-        {/* Bloc total */}
         <div
           className="rounded-2xl p-5"
           style={{
@@ -89,7 +81,6 @@ export function CheckoutPaymentScreen({
           </div>
         </div>
 
-        {/* Formulaire */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <CreditCard size={14} className="text-muted-foreground" />
@@ -100,16 +91,13 @@ export function CheckoutPaymentScreen({
 
           <div className="space-y-3">
             <span className="text-xs font-semibold text-foreground">Nom du titulaire*</span>
-
             <input
               type="text"
               placeholder="Ex: Marie Dupont"
               value={formData.cardHolder}
               onChange={(e) => handleInputChange("cardHolder", e.target.value)}
               className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                errors.cardHolder
-                  ? "border-red-500"
-                  : "border-border focus:border-primary"
+                errors.cardHolder ? "border-red-500" : "border-border focus:border-primary"
               }`}
             />
 
@@ -120,42 +108,40 @@ export function CheckoutPaymentScreen({
               value={formData.cardNumber}
               onChange={(e) => handleInputChange("cardNumber", e.target.value)}
               className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                errors.cardNumber
-                  ? "border-red-500"
-                  : "border-border focus:border-primary"
+                errors.cardNumber ? "border-red-500" : "border-border focus:border-primary"
               }`}
             />
 
             <div className="grid grid-cols-2 gap-3">
-              <span className="text-xs font-semibold text-foreground">Date d'expiration*</span>
-              <input
-                type="text"
-                placeholder="MM / AA"
-                value={formData.expiryDate}
-                onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                className={`px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                  errors.expiryDate
-                    ? "border-red-500"
-                    : "border-border focus:border-primary"
-                }`}
-              />
+              <div>
+                <span className="text-xs font-semibold text-foreground">Date d'expiration*</span>
+                <input
+                  type="text"
+                  placeholder="MM / AA"
+                  value={formData.expiryDate}
+                  onChange={(e) => handleInputChange("expiryDate", e.target.value)}
+                  className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
+                    errors.expiryDate ? "border-red-500" : "border-border focus:border-primary"
+                  }`}
+                />
+              </div>
 
-              <input
-                type="text"
-                placeholder="CVC"
-                value={formData.cvc}
-                onChange={(e) => handleInputChange("cvc", e.target.value)}
-                className={`px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                  errors.cvc
-                    ? "border-red-500"
-                    : "border-border focus:border-primary"
-                }`}
-              />
+              <div>
+                <span className="text-xs font-semibold text-foreground">CVC*</span>
+                <input
+                  type="text"
+                  placeholder="CVC"
+                  value={formData.cvc}
+                  onChange={(e) => handleInputChange("cvc", e.target.value)}
+                  className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
+                    errors.cvc ? "border-red-500" : "border-border focus:border-primary"
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Checkbox */}
         <div className="flex items-start gap-3">
           <button
             onClick={() => setAgreed(!agreed)}
@@ -170,25 +156,17 @@ export function CheckoutPaymentScreen({
 
           <p className="text-xs text-muted-foreground leading-relaxed">
             J'accepte les{" "}
-            <span className="font-bold text-foreground">
-              conditions générales de vente
-            </span>{" "}
+            <span className="font-bold text-foreground">conditions générales de vente</span>{" "}
             Michelin et la{" "}
-            <span className="font-bold text-foreground">
-              politique de confidentialité (RGPD)
-            </span>
-            . Mes données sont traitées pour la livraison et le suivi de
-            commande uniquement.
+            <span className="font-bold text-foreground">politique de confidentialité (RGPD)</span>.
           </p>
         </div>
 
-        {/* Sécurité */}
         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
           <Shield size={12} />
           Paiement sécurisé · Cryptage SSL 256-bit
         </div>
 
-        {/* Bouton payer */}
         <button
           onClick={handlePay}
           disabled={!agreed || !isFormFilled}
@@ -201,6 +179,6 @@ export function CheckoutPaymentScreen({
           Payer 59.07 €
         </button>
       </div>
-    </PhoneFrame>
+    </div>
   );
 }
