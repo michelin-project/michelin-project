@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { PhoneFrame, StatusBar, CheckoutStepper } from "../lib/shared-components";
+import { CheckoutStepper } from "../lib/shared-components";
 
 export function CheckoutInfosScreen({
   onContinue,
@@ -60,8 +60,8 @@ export function CheckoutInfosScreen({
   };
 
   return (
-    <PhoneFrame>
-      <StatusBar />
+    
+    <div className="flex flex-col h-full bg-background">
 
       <div className="flex items-center px-5 py-3 border-b border-border flex-shrink-0">
         <button onClick={onBack} className="p-1 -ml-1">
@@ -75,7 +75,6 @@ export function CheckoutInfosScreen({
 
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 space-y-5">
         
-        {/* COORDONNÉES */}
         <div>
           <div className="text-[10px] font-bold tracking-widest text-muted-foreground mb-3">
             VOS COORDONNÉES
@@ -83,8 +82,6 @@ export function CheckoutInfosScreen({
 
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-
-              {/* Prénom */}
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold text-foreground">Prénom*</span>
                 <input
@@ -100,7 +97,6 @@ export function CheckoutInfosScreen({
                 />
               </div>
 
-              {/* Nom */}
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold text-foreground">Nom*</span>
                 <input
@@ -118,7 +114,6 @@ export function CheckoutInfosScreen({
 
             </div>
 
-            {/* Email */}
             <div className="flex flex-col gap-1">
               <span className="text-xs font-semibold text-foreground">Email*</span>
               <input
@@ -137,7 +132,6 @@ export function CheckoutInfosScreen({
           </div>
         </div>
 
-        {/* ADRESSE */}
         <div>
           <div className="text-[10px] font-bold tracking-widest text-muted-foreground mb-3">
             ADRESSE DE LIVRAISON
@@ -145,7 +139,6 @@ export function CheckoutInfosScreen({
 
           <div className="space-y-3">
 
-            {/* Adresse */}
             <div className="flex flex-col gap-1">
               <span className="text-xs font-semibold text-foreground">Adresse*</span>
               <input
@@ -162,8 +155,6 @@ export function CheckoutInfosScreen({
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-
-              {/* Code postal */}
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold text-foreground">Code postal*</span>
                 <input
@@ -179,7 +170,6 @@ export function CheckoutInfosScreen({
                 />
               </div>
 
-              {/* Ville */}
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold text-foreground">Ville*</span>
                 <input
@@ -197,7 +187,6 @@ export function CheckoutInfosScreen({
 
             </div>
 
-            {/* Pays */}
             <div className="flex flex-col gap-1">
               <span className="text-xs font-semibold text-foreground">Pays*</span>
               <div className="w-full px-4 py-3.5 rounded-2xl bg-muted text-sm text-foreground">
@@ -208,7 +197,6 @@ export function CheckoutInfosScreen({
           </div>
         </div>
 
-        {/* BOUTON */}
         <button
           onClick={handleContinue}
           disabled={!isFormFilled}
@@ -221,6 +209,6 @@ export function CheckoutInfosScreen({
         </button>
 
       </div>
-    </PhoneFrame>
+    </div>
   );
 }
