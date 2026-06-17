@@ -27,7 +27,7 @@ export function Register({ onBack, onDone, onSwitch }: {
 
   const validateForm = () => {
     const newErrors = {
-      email: email.trim() === "",
+      email: !isValidEmail(email),
       password: password.trim() === "",
       confirm: confirm.trim() === "",
       mismatch: password !== confirm,
@@ -35,6 +35,10 @@ export function Register({ onBack, onDone, onSwitch }: {
 
     setErrors(newErrors);
     return !Object.values(newErrors).includes(true);
+  };
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,7 +144,7 @@ export function Register({ onBack, onDone, onSwitch }: {
 
         <button
           type="submit"
-          disabled={!isFormFilled || loading}
+          disabled={!isFormFilled || !isValidEmail(email)}
           className="w-full mt-3 h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? "Chargement..." : "Créer mon compte"}
