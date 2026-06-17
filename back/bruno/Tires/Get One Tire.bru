@@ -1,0 +1,19 @@
+meta {
+  name: Get One Tire
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/tires/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: power-cup
+}
+
+headers {
+  Accept: application/json
+}
