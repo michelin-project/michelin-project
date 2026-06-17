@@ -6,6 +6,7 @@ export function Home({ onStart, onLogin, authed }: { onStart: () => void; onLogi
     <div className="relative">
       <div className="relative h-[560px]">
         <img src={heroCyclist} alt="Cycliste en action" className="absolute inset-0 w-full h-full object-cover" width={896} height={1440} />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-background" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-5 pt-4">
           <MichelinMark className="text-white [&_.text-muted-foreground]:text-white/70 [&_.bg-primary]:bg-white [&_.text-primary-foreground]:text-primary" />
           <button
@@ -18,7 +19,7 @@ export function Home({ onStart, onLogin, authed }: { onStart: () => void; onLogi
         </div>
       </div>
 
-      <div className="-mt-50 relative px-6 pb-8 fade-up">
+      <div className="-mt-40 relative px-6 pb-8 fade-up">
         <div className="inline-flex items-center gap-2 rounded-full bg-michelin-yellow px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-ink mb-5">
           <span className="w-1.5 h-1.5 rounded-full bg-ink" /> Nouveau · Saison 2025
         </div>

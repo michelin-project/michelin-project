@@ -1,12 +1,10 @@
 import type { Tire } from "../types/index";
-import type { ReturnType } from "../lib/app-utils";
 import { deriveArchetype } from "../lib/app-utils";
-import { TIRES } from "../data/index";
 
 export function Reco({
-  tire, onSelect, selectedId, archetype, onJoin, onSkipBuy,
+  tire, others, onSelect, selectedId, archetype, onJoin, onSkipBuy,
 }: {
-  tire: Tire; onSelect: (id: string) => void; selectedId: string; archetype: ReturnType<typeof deriveArchetype>;
+  tire: Tire; others: Tire[]; onSelect: (id: string) => void; selectedId: string; archetype: ReturnType<typeof deriveArchetype>;
   onJoin: () => void; onSkipBuy: () => void;
 }) {
   return (
@@ -58,12 +56,12 @@ export function Reco({
       <div className="mt-6 px-6">
         <div className="flex items-baseline justify-between">
           <h3 className="text-[13px] font-bold uppercase tracking-wider">Autres pneus compatibles</h3>
-          <span className="text-[11px] text-muted-foreground">{TIRES.length} modèles</span>
+          <span className="text-[11px] text-muted-foreground">{others.length} modèles</span>
         </div>
       </div>
 
       <div className="mt-3 flex gap-3 overflow-x-auto no-scrollbar px-6 pb-1 snap-x snap-mandatory">
-        {TIRES.map(t => {
+        {others.map(t => {
           const active = selectedId === t.id;
           return (
             <button
