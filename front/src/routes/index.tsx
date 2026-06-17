@@ -265,6 +265,11 @@ export function App() {
           {screen === "account" && (
             <Account
               onBack={() => setScreen("home")}
+              onLogout={() => {
+                setAuthed(false);
+                setStravaLinked(false);
+                setScreen("home");
+              }}
               orders={orders}
             />
           )}

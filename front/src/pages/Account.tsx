@@ -1,12 +1,15 @@
 export function Account({
   onBack,
+  onLogout,
   orders,
 }: {
   onBack: () => void;
+  onLogout: () => void;
   orders: { id: string; date: string; tire: string; price: number }[];
 }) {
   return (
     <div className="px-6 pt-4 pb-10">
+      {/* Bouton retour */}
       <button
         type="button"
         onClick={onBack}
@@ -30,6 +33,7 @@ export function Account({
         Historique de vos commandes
       </p>
 
+      {/* Historique */}
       <div className="mt-6 flex flex-col gap-3">
         {orders.length === 0 && (
           <div className="text-sm text-muted-foreground">
@@ -52,6 +56,14 @@ export function Account({
           </div>
         ))}
       </div>
+
+      {/* Bouton déconnexion */}
+      <button
+        onClick={onLogout}
+        className="mt-8 w-full h-12 rounded-2xl bg-red-500 text-white font-semibold text-sm shadow-sm hover:bg-red-600 transition-colors"
+      >
+        Déconnexion
+      </button>
     </div>
   );
 }
