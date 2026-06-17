@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: michelin-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: michelin
+      MONGO_INITDB_ROOT_PASSWORD: michelin_dev_pwd
+      MONGO_INITDB_DATABASE: michelin_catalog
+    volumes:
+      - ./mongo-data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - michelin-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  michelin-net:
+    name: michelin-net
