@@ -2,11 +2,15 @@ import type { Answers } from "../types/index";
 
 export function deriveArchetype(a: Answers) {
   const name =
-    a.priority === "vitesse" ? "Le Performeur" :
-    a.priority === "adherence" ? "L'Aventurier" :
-    a.priority === "durabilite" ? "Le Rouleur Endurant" :
-    a.priority === "confort" ? "Le Cycliste Contrôle" :
-    "Le Performeur";
+    a.priority === "vitesse"
+      ? "Le Performeur"
+      : a.priority === "adherence"
+        ? "L'Aventurier"
+        : a.priority === "durabilite"
+          ? "Le Rouleur Endurant"
+          : a.priority === "confort"
+            ? "Le Cycliste Contrôle"
+            : "Le Performeur";
 
   const base = {
     "Le Performeur": { perf: 92, end: 70, adv: 50, ctrl: 65 },
@@ -16,10 +20,13 @@ export function deriveArchetype(a: Answers) {
   }[name]!;
 
   const tagline =
-    name === "Le Performeur" ? "Vitesse pure, ligne droite, watts maîtrisés." :
-    name === "L'Aventurier" ? "Hors des sentiers battus, là où l'asphalte s'efface." :
-    name === "Le Rouleur Endurant" ? "Des kilomètres réguliers, une cadence sereine." :
-    "Maîtrise totale, fiabilité au quotidien.";
+    name === "Le Performeur"
+      ? "Vitesse pure, ligne droite, watts maîtrisés."
+      : name === "L'Aventurier"
+        ? "Hors des sentiers battus, là où l'asphalte s'efface."
+        : name === "Le Rouleur Endurant"
+          ? "Des kilomètres réguliers, une cadence sereine."
+          : "Maîtrise totale, fiabilité au quotidien.";
 
   return { name, scores: base, tagline };
 }

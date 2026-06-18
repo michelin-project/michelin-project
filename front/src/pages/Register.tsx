@@ -2,7 +2,11 @@ import { useState } from "react";
 import { MichelinMark } from "../lib/shared-components";
 import { API_URL } from "../lib/api";
 
-export function Register({ onBack, onDone, onSwitch }: {
+export function Register({
+  onBack,
+  onDone,
+  onSwitch,
+}: {
   onBack: () => void;
   onDone: () => void;
   onSwitch: () => void; // switch vers Login
@@ -42,7 +46,7 @@ export function Register({ onBack, onDone, onSwitch }: {
     return !Object.values(newErrors).includes(true);
   };
 
-    const isValidEmail = (email: string) => {
+  const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   };
 
@@ -81,8 +85,20 @@ export function Register({ onBack, onDone, onSwitch }: {
 
   return (
     <div className="px-6 pt-4 pb-10">
-      <button type="button" onClick={onBack} className="text-sm text-muted-foreground mb-6 flex items-center gap-1.5">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><path d="M15 18l-6-6 6-6"/></svg>
+      <button
+        type="button"
+        onClick={onBack}
+        className="text-sm text-muted-foreground mb-6 flex items-center gap-1.5"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          className="w-4 h-4"
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
         Retour
       </button>
 
@@ -102,49 +118,63 @@ export function Register({ onBack, onDone, onSwitch }: {
 
         {/* Nom d'utilisateur */}
         <label className="block">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Nom d'utilisateur*</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Nom d'utilisateur*
+          </span>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ex : Léa B."
             className={`mt-1 w-full h-12 rounded-xl border bg-surface px-4 text-sm focus:outline-none ${
-              errors.name ? "border-red-500" : "border-border focus:border-primary"
+              errors.name
+                ? "border-red-500"
+                : "border-border focus:border-primary"
             }`}
           />
         </label>
 
         {/* Email */}
         <label className="block">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Email*</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Email*
+          </span>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="vous@exemple.fr"
             className={`mt-1 w-full h-12 rounded-xl border bg-surface px-4 text-sm focus:outline-none ${
-              errors.email ? "border-red-500" : "border-border focus:border-primary"
+              errors.email
+                ? "border-red-500"
+                : "border-border focus:border-primary"
             }`}
           />
         </label>
 
         {/* Mot de passe */}
         <label className="block">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Mot de passe*</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Mot de passe*
+          </span>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className={`mt-1 w-full h-12 rounded-xl border bg-surface px-4 text-sm focus:outline-none ${
-              errors.password ? "border-red-500" : "border-border focus:border-primary"
+              errors.password
+                ? "border-red-500"
+                : "border-border focus:border-primary"
             }`}
           />
         </label>
 
         {/* Confirmation */}
         <label className="block">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Confirmer le mot de passe*</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Confirmer le mot de passe*
+          </span>
           <input
             type="password"
             value={confirm}
@@ -157,7 +187,9 @@ export function Register({ onBack, onDone, onSwitch }: {
             }`}
           />
           {errors.mismatch && (
-            <p className="text-xs text-red-500 mt-1">Les mots de passe ne correspondent pas</p>
+            <p className="text-xs text-red-500 mt-1">
+              Les mots de passe ne correspondent pas
+            </p>
           )}
         </label>
 
@@ -171,7 +203,11 @@ export function Register({ onBack, onDone, onSwitch }: {
       </form>
 
       <div className="mt-4 text-center">
-        <button type="button" onClick={onSwitch} className="text-sm text-primary font-medium">
+        <button
+          type="button"
+          onClick={onSwitch}
+          className="text-sm text-primary font-medium"
+        >
           Déjà un compte ? Se connecter
         </button>
       </div>
