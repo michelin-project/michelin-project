@@ -7,11 +7,13 @@ export function Register({ onBack, onDone, onSwitch }: {
   onDone: () => void;
   onSwitch: () => void; // switch vers Login
 }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
   const [errors, setErrors] = useState({
+    name: false,
     email: false,
     password: false,
     confirm: false,
@@ -22,12 +24,14 @@ export function Register({ onBack, onDone, onSwitch }: {
   const [loading, setLoading] = useState(false);
 
   const isFormFilled =
+    name.trim() !== "" &&
     email.trim() !== "" &&
     password.trim() !== "" &&
     confirm.trim() !== "";
 
   const validateForm = () => {
     const newErrors = {
+      name: name.trim() === "",
       email: email.trim() === "",
       password: password.trim() === "",
       confirm: confirm.trim() === "",
@@ -50,7 +54,7 @@ export function Register({ onBack, onDone, onSwitch }: {
       const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, name }),
       });
 
       if (!res.ok) {
@@ -91,6 +95,20 @@ export function Register({ onBack, onDone, onSwitch }: {
             {error}
           </div>
         )}
+
+        {/* Nom d'utilisateur */}
+        <label className="block">
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Nom d'utilisateur*</span>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ex : Léa B."
+            className={`mt-1 w-full h-12 rounded-xl border bg-surface px-4 text-sm focus:outline-none ${
+              errors.name ? "border-red-500" : "border-border focus:border-primary"
+            }`}
+          />
+        </label>
 
         {/* Email */}
         <label className="block">

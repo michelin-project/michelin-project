@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class LeaderboardService {
-  private readonly ranking = [
-    { rank: 1, name: 'Léa Bertin', km: 412, you: false },
-    { rank: 2, name: 'Tom Riva', km: 388, you: false },
-    { rank: 3, name: 'Marc V. (vous)', km: 327, you: true },
-    { rank: 4, name: 'Sami N.', km: 301, you: false },
-    { rank: 5, name: 'Inès D.', km: 270, you: false },
-    { rank: 6, name: 'Paul C.', km: 244, you: false },
-  ];
+  constructor(private readonly usersService: UsersService) {}
 
-  findAll() {
-    // Plus tard, nous ferons ici une requête SQL TypeORM pour calculer le classement dynamique
-    return this.ranking;
+  async findAll() {
+    const users = await this.usersService.findAll();
+    const sorted = users.sort((a, b) => (b.scores || 0) - (a.scores || 0));
+    return sorted.map((user, index) => ({
+      rank: index + 1,
+      name: user.name || user.email.split('@')[0], // Utilise le début de l'email si pas de nom
+      km: user.scores || 0,
+      email: user.email, // L'email permettra au front de savoir qui est "vous"
+    }));
   }
 }

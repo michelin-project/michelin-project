@@ -1,4 +1,48 @@
+import { useEffect, useState } from "react";
+
 export function Progress({ onLeaderboard, onReward }: { onLeaderboard: () => void; onReward: () => void }) {
+  const [distance, setDistance] = useState(0);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("michelin_token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setEmail(payload.email);
+        fetch(`http://localhost:3000/users/${payload.email}`)
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.scores !== undefined) {
+              setDistance(data.scores);
+            }
+          });
+      } catch (e) {
+        console.error("Token decoding failed", e);
+      }
+    }
+  }, []);
+
+  const handleSimulate = async () => {
+    if (!email) return;
+    try {
+      const res = await fetch("http://localhost:3000/users/simulate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, distance: 200 })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDistance(data.scores);
+        onReward();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const percentage = Math.min(100, Math.round((distance / 200) * 100));
+
   return (
     <div className="px-6 pt-6 pb-10">
       <div className="flex items-baseline justify-between">
@@ -12,7 +56,7 @@ export function Progress({ onLeaderboard, onReward }: { onLeaderboard: () => voi
       <div className="mt-5 rounded-3xl p-6 text-white relative overflow-hidden shadow-[var(--shadow-elevated)]" style={{ background: "var(--gradient-blue)" }}>
         <div className="text-[11px] uppercase tracking-wider opacity-80">Distance cette semaine</div>
         <div className="mt-1 flex items-end gap-2">
-          <div className="text-6xl font-black tracking-tight">127</div>
+          <div className="text-6xl font-black tracking-tight">{distance}</div>
           <div className="pb-2 text-sm opacity-80">km</div>
         </div>
         <div className="mt-4 flex gap-1.5 h-16 items-end">
@@ -31,17 +75,17 @@ export function Progress({ onLeaderboard, onReward }: { onLeaderboard: () => voi
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Challenge 200 km</div>
-            <div className="text-xl font-black tracking-tight mt-0.5">142 / 200 km</div>
+            <div className="text-xl font-black tracking-tight mt-0.5">{distance} / 200 km</div>
           </div>
           <div className="text-right">
             <div className="text-[11px] text-muted-foreground">Reste</div>
-            <div className="font-bold">58 km</div>
+            <div className="font-bold">{Math.max(0, 200 - distance)} km</div>
           </div>
         </div>
         <div className="mt-3 h-2 rounded-full bg-surface overflow-hidden">
-          <div className="h-full bg-primary" style={{ width: "71%" }} />
+          <div className="h-full bg-primary" style={{ width: `${percentage}%` }} />
         </div>
-        <button onClick={onReward} className="mt-4 w-full h-11 rounded-xl bg-michelin-yellow text-ink font-semibold text-sm">
+        <button onClick={handleSimulate} className="mt-4 w-full h-11 rounded-xl bg-michelin-yellow text-ink font-semibold text-sm">
           Simuler 200 km atteints
         </button>
       </div>
