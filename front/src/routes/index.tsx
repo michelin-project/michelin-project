@@ -136,7 +136,7 @@ export function App() {
               onBack={() => setScreen("login")}
               onDone={() => {
                 setAuthed(true);
-                setScreen(loginRedirect);
+                setScreen("quiz");
               }}
               onSwitch={() => setScreen("login")}
             />
