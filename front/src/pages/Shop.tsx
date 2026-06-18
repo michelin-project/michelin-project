@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
-import { Search, ArrowUpDown, Star } from "lucide-react";
-import { TIRES } from "../data/index";
+import { useState, useMemo, useEffect } from "react";
+import { Search, ArrowUpDown } from "lucide-react";
+import { resolveTireImage } from "../data/index";
 
 export function Shop({
   promoActive,
@@ -16,14 +16,40 @@ export function Shop({
   const [q, setQ] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
   const [selected, setSelected] = useState<string | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/products")
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) setProducts(data);
+        else if (data && Array.isArray(data.data)) setProducts(data.data);
+        else setProducts([]);
+      })
+      .catch((err) => console.error("Erreur chargement produits:", err));
+  }, []);
 
   const items = useMemo(() => {
     const ql = q.trim().toLowerCase();
-    return TIRES.filter((t) => {
+    return products.filter((p) => {
       if (!ql) return true;
-      const hay = `${t.name} ${t.family} ${t.tag}`.toLowerCase();
+      const name = p.webProductDesignation || p.webRangeName || p.rangeInternal || p["Web Product Designation"] || "";
+      const hay = `${name} ${p.cycleTypeWeb || p["CYCLE TYPE WEB"] || ""} ${p.segment || p.Segment || ""}`.toLowerCase();
       return hay.includes(ql);
-    }).sort((a, b) => (sort === "asc" ? a.price - b.price : b.price - a.price));
+    }).sort((a, b) => {
+      const pA = a.pricing?.msrp_eur || 0;
+      const pB = b.pricing?.msrp_eur || 0;
+      return sort === "asc" ? pA - pB : pB - pA;
+    });
+  }, [q, sort, products]);
+
+  // On réinitialise à 10 éléments affichés si on change la recherche ou le tri
+  useEffect(() => {
+    setVisibleCount(10);
   }, [q, sort]);
 
   const handleSelect = (id: string) => {
@@ -50,7 +76,6 @@ export function Shop({
           onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
           className="chip"
         >
-          <ArrowUpDown className="h-3 w-3" />
           Prix {sort === "asc" ? "↑" : "↓"}
         </button>
 
@@ -61,13 +86,18 @@ export function Shop({
 
       {/* Liste des pneus */}
       <div className="grid grid-cols-2 gap-3">
-        {items.map((t) => {
-          const isActive = selected === t.id;
+        {items.slice(0, visibleCount).map((t) => {
+            const id = String(t._id);
+            const isActive = selected === id;
+            const name = t.webProductDesignation || t.webRangeName || t.rangeInternal || t["Web Product Designation"] || "Pneu Michelin";
+            const family = t.cycleTypeWeb || t["CYCLE TYPE WEB"] || "MICHELIN";
+            const price = t.pricing?.msrp_eur || 0;
+            const image = resolveTireImage({ id: "power-cup", family } as any, "route");
 
           return (
             <button
-              key={t.id}
-              onClick={() => handleSelect(t.id)}
+                key={id}
+                onClick={() => handleSelect(id)}
               className={`
                 rounded-xl overflow-hidden border transition-all text-left
                 ${isActive ? "border-michelin-blue shadow-lg" : "border-border"}
@@ -76,8 +106,8 @@ export function Shop({
               {/* IMAGE */}
               <div className="bg-white h-36 w-full flex items-center justify-center p-3">
                 <img
-                  src={t.image}
-                  alt={t.name}
+                    src={image}
+                    alt={name}
                   className="max-h-full max-w-full object-contain"
                 />
               </div>
@@ -86,25 +116,30 @@ export function Shop({
               <div className="bg-white p-3 flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-michelin-blue">
-                    {t.family}
-                  </span>
-
-                  <span className="flex items-center gap-0.5 text-[10px] font-bold">
-                    <Star className="h-3 w-3 fill-michelin-yellow text-michelin-yellow" />
-                    {t.match}
+                    {family}
                   </span>
                 </div>
 
-                <div className="truncate text-sm font-bold">{t.name}</div>
+                <div className="text-[11px] font-bold leading-tight line-clamp-3 h-10">{name}</div>
 
                 <div className="text-sm font-black text-michelin-blue">
-                  {t.price.toFixed(2)} €
+                    {price.toFixed(2)} €
                 </div>
               </div>
             </button>
           );
         })}
       </div>
+
+      {/* Bouton Voir + */}
+      {visibleCount < items.length && (
+        <button
+          onClick={() => setVisibleCount((prev) => prev + 10)}
+          className="w-full h-12 mt-2 rounded-xl font-bold text-sm bg-surface border border-border text-michelin-blue transition-colors hover:bg-michelin-blue/5"
+        >
+          Voir +
+        </button>
+      )}
 
       {items.length === 0 && (
         <div className="m-card p-8 text-center text-sm text-muted-foreground">
