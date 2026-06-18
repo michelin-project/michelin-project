@@ -34,10 +34,10 @@ export function CheckoutPaymentScreen({
   // Validation finale (affiche les bordures rouges)
   const validateForm = () => {
     const newErrors = {
-        cardHolder: !isValidName(formData.cardHolder),
-        cardNumber: formData.cardNumber.replace(/\s/g, "").length !== 16,
-        expiryDate: !isValidExpiry(formData.expiryDate),
-        cvc: !isValidCVC(formData.cvc),
+      cardHolder: !isValidName(formData.cardHolder),
+      cardNumber: formData.cardNumber.replace(/\s/g, "").length !== 16,
+      expiryDate: !isValidExpiry(formData.expiryDate),
+      cvc: !isValidCVC(formData.cvc),
     };
 
     setErrors(newErrors);
@@ -54,27 +54,26 @@ export function CheckoutPaymentScreen({
     let formatted = value;
 
     if (field === "cardNumber") {
-        formatted = formatCardNumber(value);
+      formatted = formatCardNumber(value);
     }
 
     if (field === "expiryDate") {
-        formatted = formatExpiry(value);
+      formatted = formatExpiry(value);
     }
-    
-        if (field === "cvc") {
-        formatted = value.replace(/\D/g, "").slice(0, 3);
+
+    if (field === "cvc") {
+      formatted = value.replace(/\D/g, "").slice(0, 3);
     }
 
     setFormData((prev) => ({ ...prev, [field]: formatted }));
   };
 
-
   // Nettoyage + formatage du numéro de carte
   const formatCardNumber = (value: string) => {
     return value
-      .replace(/\D/g, "")        // garde uniquement les chiffres
-      .slice(0, 16)              // max 16 chiffres
-            .replace(/(.{4})/g, "$1 "); // ajoute un espace tous les 4 chiffres
+      .replace(/\D/g, "") // garde uniquement les chiffres
+      .slice(0, 16) // max 16 chiffres
+      .replace(/(.{4})/g, "$1 "); // ajoute un espace tous les 4 chiffres
   };
 
   // Formatage automatique MM/AA
@@ -82,7 +81,7 @@ export function CheckoutPaymentScreen({
     const cleaned = value.replace(/\D/g, "").slice(0, 4);
     if (cleaned.length <= 2) return cleaned;
     return cleaned.slice(0, 2) + "/" + cleaned.slice(2);
- };
+  };
 
   // Validation expiration (MM/AA)
   const isValidExpiry = (value: string) => {
@@ -98,9 +97,7 @@ export function CheckoutPaymentScreen({
   const isValidName = (value: string) =>
     /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/.test(value.trim());
 
-
   return (
-
     <div className="flex flex-col h-full bg-background">
       <div className="flex items-center px-5 py-3 border-b border-border">
         <button onClick={onBack} className="p-1 -ml-1">
@@ -140,7 +137,9 @@ export function CheckoutPaymentScreen({
           </div>
 
           <div className="space-y-3">
-            <span className="text-xs font-semibold text-foreground">Nom du titulaire*</span>
+            <span className="text-xs font-semibold text-foreground">
+              Nom du titulaire*
+            </span>
 
             <input
               type="text"
@@ -154,40 +153,54 @@ export function CheckoutPaymentScreen({
               }`}
             />
 
-            <span className="text-xs font-semibold text-foreground">Numéro de carte*</span>
+            <span className="text-xs font-semibold text-foreground">
+              Numéro de carte*
+            </span>
             <input
               type="text"
               placeholder="Numéro de carte"
               value={formData.cardNumber}
               onChange={(e) => handleInputChange("cardNumber", e.target.value)}
               className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                errors.cardNumber ? "border-red-500" : "border-border focus:border-primary"
+                errors.cardNumber
+                  ? "border-red-500"
+                  : "border-border focus:border-primary"
               }`}
             />
 
             <div className="grid grid-cols-2 gap-3">
-                          <div>
-                <span className="text-xs font-semibold text-foreground">Date d'expiration*</span>
+              <div>
+                <span className="text-xs font-semibold text-foreground">
+                  Date d'expiration*
+                </span>
                 <input
                   type="text"
                   placeholder="MM / AA"
                   value={formData.expiryDate}
-                  onChange={(e) => handleInputChange("expiryDate", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("expiryDate", e.target.value)
+                  }
                   className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                    errors.expiryDate ? "border-red-500" : "border-border focus:border-primary"
+                    errors.expiryDate
+                      ? "border-red-500"
+                      : "border-border focus:border-primary"
                   }`}
                 />
               </div>
 
               <div>
-                <span className="text-xs font-semibold text-foreground">CVC*</span>
+                <span className="text-xs font-semibold text-foreground">
+                  CVC*
+                </span>
                 <input
                   type="text"
                   placeholder="CVC"
                   value={formData.cvc}
                   onChange={(e) => handleInputChange("cvc", e.target.value)}
                   className={`w-full px-4 py-3 rounded-2xl border bg-background text-sm placeholder:text-muted-foreground focus:outline-none ${
-                    errors.cvc ? "border-red-500" : "border-border focus:border-primary"
+                    errors.cvc
+                      ? "border-red-500"
+                      : "border-border focus:border-primary"
                   }`}
                 />
               </div>
@@ -210,10 +223,14 @@ export function CheckoutPaymentScreen({
 
           <p className="text-xs text-muted-foreground leading-relaxed">
             J'accepte les{" "}
-            <span className="font-bold text-foreground">conditions générales de vente</span>{" "}
+            <span className="font-bold text-foreground">
+              conditions générales de vente
+            </span>{" "}
             Michelin et la{" "}
-            <span className="font-bold text-foreground">politique de confidentialité (RGPD)</span>.
-            . Mes données sont traitées pour la livraison et le suivi de
+            <span className="font-bold text-foreground">
+              politique de confidentialité (RGPD)
+            </span>
+            . . Mes données sont traitées pour la livraison et le suivi de
             commande uniquement.
           </p>
         </div>

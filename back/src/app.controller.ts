@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class AppController {
   @Get()
   getHello(): { status: string; message: string } {
-    return { status: 'ok', message: 'L\'API backend Michelin est en ligne !' };
+    return { status: 'ok', message: "L'API backend Michelin est en ligne !" };
   }
 }

@@ -52,7 +52,11 @@ interface RawProduct {
   'Rubber Technologies'?: string[] | null;
   sizing?: { width_mm?: number | null } | null;
   weights?: { tyre_g?: number | null } | null;
-  tech?: { tpi?: number | null; bead?: string | null; sealing?: string | null } | null;
+  tech?: {
+    tpi?: number | null;
+    bead?: string | null;
+    sealing?: string | null;
+  } | null;
   pricing?: { msrp_eur?: number } | null;
   // Champs ajoutés par le pipeline
   total?: number;
@@ -161,7 +165,9 @@ export class RecommendationsService {
     private readonly products: MongoRepository<Product>,
   ) {}
 
-  async recommend(input?: RecommendationAnswers | null): Promise<RecommendationTire[]> {
+  async recommend(
+    input?: RecommendationAnswers | null,
+  ): Promise<RecommendationTire[]> {
     const answers = this.withDefaults(input);
     const pipeline = this.buildPipeline(answers);
     try {
@@ -183,12 +189,13 @@ export class RecommendationsService {
     // constructor...) ; on utilise hasOwnProperty pour un allowlist strict.
     const has = (o: object, k: string) =>
       Object.prototype.hasOwnProperty.call(o, k);
-    const weekly = a.weekly as WeeklyAnswer | undefined;
+    const weekly = a.weekly;
     return {
-      bike:
-        a.bike && has(BIKE_TOKEN, a.bike) ? a.bike : DEFAULTS.bike,
+      bike: a.bike && has(BIKE_TOKEN, a.bike) ? a.bike : DEFAULTS.bike,
       priority:
-        a.priority && has(PRIORITY_RULE, a.priority) ? a.priority : DEFAULTS.priority,
+        a.priority && has(PRIORITY_RULE, a.priority)
+          ? a.priority
+          : DEFAULTS.priority,
       weekly:
         weekly && ([50, 100, 200, 300] as WeeklyAnswer[]).includes(weekly)
           ? weekly
@@ -331,7 +338,10 @@ export class RecommendationsService {
     a: Required<RecommendationAnswers>,
   ): RecommendationHighlight[] {
     const scores = this.baseScores(d);
-    const picks: Record<PriorityAnswer, [BaseScoreKey, BaseScoreKey, BaseScoreKey]> = {
+    const picks: Record<
+      PriorityAnswer,
+      [BaseScoreKey, BaseScoreKey, BaseScoreKey]
+    > = {
       vitesse: ['leger', 'souple', 'adherence'],
       adherence: ['adherence', 'souple', 'robuste'],
       durabilite: ['robuste', 'leger', 'adherence'],
@@ -397,7 +407,9 @@ export class RecommendationsService {
     if (/TUBELESS/i.test(sealing)) techBits.push('monte tubeless');
     if (/FOLDABLE/i.test(bead)) techBits.push('tringle souple');
     let s = `Conçu pour ${TERRAIN_LABEL[a.terrain]} et ${PRIORITY_LABEL[a.priority]}, ce pneu ${segLine}`;
-    s += techBits.length ? ` (${techBits.join(', ')})` : ' offre un bon compromis';
+    s += techBits.length
+      ? ` (${techBits.join(', ')})`
+      : ' offre un bon compromis';
     s += g != null ? ` pour seulement ${g} g` : '';
     s += '.';
     return s;

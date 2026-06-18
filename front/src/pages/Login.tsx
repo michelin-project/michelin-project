@@ -24,9 +24,7 @@ export function Login({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const isFormFilled =
-    email.trim() !== "" &&
-    password.trim() !== "";
+  const isFormFilled = email.trim() !== "" && password.trim() !== "";
 
   const validateForm = () => {
     const newErrors = {
@@ -78,7 +76,13 @@ export function Login({
         onClick={onBack}
         className="text-sm text-muted-foreground mb-6 flex items-center gap-1.5"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          className="w-4 h-4"
+        >
           <path d="M15 18l-6-6 6-6" />
         </svg>
         Retour
@@ -89,7 +93,8 @@ export function Login({
       <h1 className="mt-8 text-3xl font-black tracking-tight">Connexion</h1>
 
       <p className="mt-2 text-sm text-muted-foreground">
-        La création de compte est optionnelle. Elle est requise pour rejoindre les challenges Strava.
+        La création de compte est optionnelle. Elle est requise pour rejoindre
+        les challenges Strava.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-3">
@@ -100,27 +105,35 @@ export function Login({
         )}
 
         <label className="block">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Email*</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Email*
+          </span>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="vous@exemple.fr"
             className={`mt-1 w-full h-12 rounded-xl border bg-surface px-4 text-sm focus:outline-none ${
-              errors.email ? "border-red-500" : "border-border focus:border-primary"
+              errors.email
+                ? "border-red-500"
+                : "border-border focus:border-primary"
             }`}
           />
         </label>
 
         <label className="block">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Mot de passe*</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Mot de passe*
+          </span>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className={`mt-1 w-full h-12 rounded-xl border bg-surface px-4 text-sm focus:outline-none ${
-              errors.password ? "border-red-500" : "border-border focus:border-primary"
+              errors.password
+                ? "border-red-500"
+                : "border-border focus:border-primary"
             }`}
           />
         </label>
@@ -145,7 +158,9 @@ export function Login({
       </div>
 
       <div className="my-6 flex items-center gap-3 text-[11px] uppercase tracking-wider text-muted-foreground">
-        <span className="flex-1 h-px bg-border" />ou<span className="flex-1 h-px bg-border" />
+        <span className="flex-1 h-px bg-border" />
+        ou
+        <span className="flex-1 h-px bg-border" />
       </div>
 
       <div className="space-y-2">
