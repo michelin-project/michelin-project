@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './product.entity';
+import { ProductsController } from './products.controller';
+import { ProductsService } from './products.service';
 
 /**
  * Possède l'entité `Product` (collection `products`) et partage le repository
@@ -8,6 +10,8 @@ import { Product } from './product.entity';
  */
 @Module({
   imports: [TypeOrmModule.forFeature([Product])],
-  exports: [TypeOrmModule],
+  controllers: [ProductsController],
+  providers: [ProductsService],
+  exports: [TypeOrmModule, ProductsService],
 })
 export class ProductsModule {}

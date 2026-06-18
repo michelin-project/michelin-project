@@ -58,5 +58,7 @@ export class Product {
   };
   weights?: { tyre_g?: number | null; total_g?: number | null };
   tech?: { tpi?: number | null; bead?: string | null; sealing?: string | null };
+
+  @Column('json', { nullable: true })
   pricing?: { currency?: string; msrp_eur?: number; cost_eur?: number | null };
 }
