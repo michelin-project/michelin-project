@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export function Progress({ onLeaderboard, onReward }: { onLeaderboard: () => void; onReward: () => void }) {
   const [distance, setDistance] = useState(0);
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("michelin_token");
@@ -13,8 +14,9 @@ export function Progress({ onLeaderboard, onReward }: { onLeaderboard: () => voi
         fetch(`http://localhost:3000/users/${payload.email}`)
           .then(r => r.json())
           .then(data => {
-            if (data && data.scores !== undefined) {
-              setDistance(data.scores);
+            if (data) {
+              if (data.scores !== undefined) setDistance(data.scores);
+              if (data.name) setName(data.name);
             }
           });
       } catch (e) {
@@ -108,7 +110,7 @@ export function Progress({ onLeaderboard, onReward }: { onLeaderboard: () => voi
 
       <div className="mt-6 rounded-2xl border border-border p-4 bg-surface">
         <div className="text-sm leading-snug">
-          <span className="font-bold">Allez Marc, </span>
+          <span className="font-bold">Allez {name || "Cycliste"}, </span>
           encore 2 sorties pour décrocher votre coupon <span className="font-bold text-primary">−15%</span> sur Michelin Power Cup.
         </div>
       </div>
