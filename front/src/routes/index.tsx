@@ -4,7 +4,6 @@ import type { ScreenKey, Answers, Tire } from "../types/index";
 import { deriveArchetype } from "../lib/app-utils";
 import { BottomNav } from "../lib/shared-components";
 import { TIRES, resolveTireImage } from "../data/index";
-import { BottomNav } from "../lib/shared-components";
 import { API_URL } from "../lib/api";
 
 import { Home } from "../pages/Home";
@@ -45,8 +44,11 @@ export const Route = createFileRoute("/")({
 });
 
 export function App() {
-  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("michelin_token");
-  const [screen, setScreen] = useState<ScreenKey>(hasToken ? "progress" : "home");
+  const hasToken =
+    typeof window !== "undefined" && !!localStorage.getItem("michelin_token");
+  const [screen, setScreen] = useState<ScreenKey>(
+    hasToken ? "progress" : "home",
+  );
   const [answers, setAnswers] = useState<Answers>({});
   const [selectedTireId, setSelectedTireId] = useState<string>(TIRES[0].id);
   const [recoResults, setRecoResults] = useState<Tire[]>([]);
@@ -56,11 +58,10 @@ export function App() {
   const [recommendationPromo, setRecommendationPromo] = useState(false);
   const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("progress");
 
-
   const [orders, setOrders] = useState<
-      { id: string; date: string; tire: string; price: number }[]
-    >([]);
-    
+    { id: string; date: string; tire: string; price: number }[]
+  >([]);
+
   const archetype = useMemo(() => deriveArchetype(answers), [answers]);
   // Recommandations dynamiques : on interroge POST /recommendations dès que le
   // quiz est rempli. En cas d'échec (back indisponible) ou de réponse vide, on
@@ -78,7 +79,10 @@ export function App() {
       .then((data: Tire[]) => {
         if (Array.isArray(data) && data.length > 0) {
           setRecoResults(
-            data.map((t) => ({ ...t, image: resolveTireImage(t, answers.bike) })),
+            data.map((t) => ({
+              ...t,
+              image: resolveTireImage(t, answers.bike),
+            })),
           );
           setSelectedTireId(data[0].id); // le 1er résultat = pneu mis en avant
         }
@@ -97,7 +101,6 @@ export function App() {
     <div className="min-h-dvh w-full flex justify-center bg-surface-2">
       <div className="w-full max-w-md bg-background flex flex-col shadow-[var(--shadow-elevated)] border-x border-border">
         <div className="flex-1 scroll-area">
-
           {/* HOME */}
           {screen === "home" && (
             <Home
@@ -144,12 +147,7 @@ export function App() {
             <Quiz
               onDone={(a) => {
                 setAnswers(a);
-                if (authed) {
-                  setScreen("result");
-                } else {
-                  setLoginRedirect("result");
-                  setScreen("login");
-                }
+                setScreen("result");
               }}
               onBack={() => setScreen("home")}
             />
@@ -228,7 +226,7 @@ export function App() {
               onBuy={() => {
                 if (!authed) {
                   setLoginRedirect("checkoutInfos");
-                  setScreen("shop");
+                  setScreen("login");
                 } else {
                   setScreen("checkoutInfos");
                 }
@@ -253,7 +251,6 @@ export function App() {
               }}
             />
           )}
-
 
           {/* CHECKOUT INFOS */}
           {screen === "checkoutInfos" && (
@@ -291,8 +288,6 @@ export function App() {
               orders={orders}
             />
           )}
-
-
         </div>
 
         {/* BOTTOM NAV */}
