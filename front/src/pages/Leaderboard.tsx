@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PodiumItem } from "../lib/shared-components";
+import { API_URL } from "../lib/api";
 
 export function Leaderboard({ onBack }: { onBack: () => void }) {
   const [rows, setRows] = useState<any[]>([]);
@@ -16,7 +17,7 @@ export function Leaderboard({ onBack }: { onBack: () => void }) {
       }
     }
 
-    fetch("http://localhost:3000/leaderboard")
+    fetch(`${API_URL}/leaderboard`)
       .then((res) => res.json())
       .then((data) => setRows(data))
       .catch((err) => console.error(err));

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../lib/api";
 
 export function Progress({
   onLeaderboard,
@@ -17,7 +18,7 @@ export function Progress({
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setEmail(payload.email);
-        fetch(`http://localhost:3000/users/${payload.email}`)
+        fetch(`${API_URL}/users/${payload.email}`)
           .then((r) => r.json())
           .then((data) => {
             if (data) {
@@ -34,7 +35,7 @@ export function Progress({
   const handleSimulate = async () => {
     if (!email) return;
     try {
-      const res = await fetch("http://localhost:3000/users/simulate", {
+      const res = await fetch(`${API_URL}/users/simulate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, distance: 200 }),

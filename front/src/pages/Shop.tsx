@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import { resolveTireImage } from "../data/index";
+import { API_URL } from "../lib/api";
 
 export function Shop({
   promoActive,
@@ -20,7 +21,7 @@ export function Shop({
   const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
-    fetch("http://localhost:3000/products")
+    fetch(`${API_URL}/products`)
       .then(async (res) => {
         if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
         return res.json();
