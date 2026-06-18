@@ -86,7 +86,7 @@ export function CheckoutPaymentScreen({
   // Validation expiration (MM/AA)
   const isValidExpiry = (value: string) => {
     if (!/^\d{2}\/\d{2}$/.test(value)) return false;
-    const [mm, yy] = value.split("/").map(Number);
+    const [mm] = value.split("/").map(Number);
     return mm >= 1 && mm <= 12;
   };
 

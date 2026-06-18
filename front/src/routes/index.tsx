@@ -58,7 +58,7 @@ export function App() {
   const [recommendationPromo, setRecommendationPromo] = useState(false);
   const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("progress");
 
-  const [orders, setOrders] = useState<
+  const [orders] = useState<
     { id: string; date: string; tire: string; price: number }[]
   >([]);
 
