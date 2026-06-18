@@ -12,7 +12,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
   imports: [
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb://michelin:michelin_dev_pwd@localhost:27017/michelin_catalog?authSource=admin',
+      url: process.env.MONGODB_URL,
       autoLoadEntities: true,
       synchronize: true,
     }),
