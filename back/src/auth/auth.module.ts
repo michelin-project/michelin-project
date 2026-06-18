@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
     UsersModule,
     JwtModule.register({
       global: true,
-      secret: 'CLE_SECRETE_TEMPORAIRE_POUR_LE_DEV', // TODO: Passer par les variables d'environnement (.env)
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' }, // Le token expire dans 1 heure
     }),
   ],

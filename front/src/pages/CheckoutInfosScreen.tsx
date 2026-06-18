@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { PhoneFrame, StatusBar, CheckoutStepper } from "../lib/shared-components";
+import { CheckoutStepper } from "../lib/shared-components";
 
 export function CheckoutInfosScreen({
   onContinue,
@@ -39,7 +39,7 @@ export function CheckoutInfosScreen({
     const newErrors = {
       firstName: formData.firstName.trim() === "",
       lastName: formData.lastName.trim() === "",
-      email: formData.email.trim() === "",
+      email: !isValidEmail(formData.email),
       address: formData.address.trim() === "",
       postalCode: formData.postalCode.trim() === "",
       city: formData.city.trim() === "",
@@ -47,6 +47,10 @@ export function CheckoutInfosScreen({
 
     setErrors(newErrors);
     return !Object.values(newErrors).includes(true);
+  };
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   };
 
   const handleContinue = () => {
@@ -60,8 +64,7 @@ export function CheckoutInfosScreen({
   };
 
   return (
-    <PhoneFrame>
-      <StatusBar />
+    <div className="flex flex-col h-full bg-background">
 
       <div className="flex items-center px-5 py-3 border-b border-border flex-shrink-0">
         <button onClick={onBack} className="p-1 -ml-1">
@@ -211,7 +214,10 @@ export function CheckoutInfosScreen({
         {/* BOUTON */}
         <button
           onClick={handleContinue}
-          disabled={!isFormFilled}
+          disabled={
+            !isFormFilled ||
+            !isValidEmail(formData.email)
+          }
           className="w-full py-4 rounded-2xl text-sm font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
             background: isFormFilled ? "#1B3FAB" : "#c7d3f5",
@@ -221,6 +227,6 @@ export function CheckoutInfosScreen({
         </button>
 
       </div>
-    </PhoneFrame>
+      </div>
   );
 }
