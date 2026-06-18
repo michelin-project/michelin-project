@@ -4,7 +4,6 @@ import type { ScreenKey, Answers, Tire } from "../types/index";
 import { deriveArchetype } from "../lib/app-utils";
 import { BottomNav } from "../lib/shared-components";
 import { TIRES, resolveTireImage } from "../data/index";
-import { BottomNav } from "../lib/shared-components";
 import { API_URL } from "../lib/api";
 
 import { Home } from "../pages/Home";
@@ -144,12 +143,7 @@ export function App() {
             <Quiz
               onDone={(a) => {
                 setAnswers(a);
-                if (authed) {
-                  setScreen("result");
-                } else {
-                  setLoginRedirect("result");
-                  setScreen("login");
-                }
+                setScreen("result");
               }}
               onBack={() => setScreen("home")}
             />
@@ -228,7 +222,7 @@ export function App() {
               onBuy={() => {
                 if (!authed) {
                   setLoginRedirect("checkoutInfos");
-                  setScreen("shop");
+                  setScreen("login");
                 } else {
                   setScreen("checkoutInfos");
                 }
