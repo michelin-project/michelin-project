@@ -2,9 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { ScreenKey, Answers, Tire } from "../types/index";
 import { deriveArchetype } from "../lib/app-utils";
-import { TIRES, resolveTireImage } from "../data/index";
 import { BottomNav } from "../lib/shared-components";
-
+import { TIRES, resolveTireImage } from "../data/index";
 import { Home } from "../pages/Home";
 import { Login } from "../pages/Login";
 import { Register } from "../pages/Register";
@@ -15,10 +14,12 @@ import { Challenge } from "../pages/Challenge";
 import { Progress } from "../pages/Progress";
 import { Leaderboard } from "../pages/Leaderboard";
 import { Reward } from "../pages/Reward";
-import { Shop } from "../pages/Shop";
+import { Recommendation } from "../pages/Recommendation";
 import { Confirm } from "../pages/Confirm";
 import { CheckoutInfosScreen } from "../pages/CheckoutInfosScreen";
 import { CheckoutPaymentScreen } from "../pages/CheckoutPaymentScreen";
+import { Shop } from "../pages/Shop";
+import { Account } from "../pages/Account";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,9 +50,14 @@ export function App() {
   const [authed, setAuthed] = useState(hasToken);
   const [stravaLinked, setStravaLinked] = useState(false);
   const [challengeJoined, setChallengeJoined] = useState(false);
-  const [shopPromo, setShopPromo] = useState(false);
+  const [recommendationPromo, setRecommendationPromo] = useState(false);
   const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("progress");
 
+
+  const [orders, setOrders] = useState<
+      { id: string; date: string; tire: string; price: number }[]
+    >([]);
+    
   const archetype = useMemo(() => deriveArchetype(answers), [answers]);
   // Recommandations dynamiques : on interroge POST /recommendations dès que le
   // quiz est rempli. En cas d'échec (back indisponible) ou de réponse vide, on
@@ -164,7 +170,7 @@ export function App() {
               selectedId={selectedTireId}
               archetype={archetype}
               onJoin={() => setScreen("challenge")}
-              onSkipBuy={() => setScreen("shop")}
+              onSkipBuy={() => setScreen("recommendation")}
             />
           )}
 
@@ -202,8 +208,27 @@ export function App() {
           {screen === "reward" && (
             <Reward
               onSee={() => {
-                setShopPromo(true);
-                setScreen("shop");
+                setRecommendationPromo(true);
+                setScreen("recommendation");
+              }}
+            />
+          )}
+
+          {/* RECOMMENDATION */}
+          {screen === "recommendation" && (
+            <Recommendation
+              tire={selectedTire}
+              promoActive={recommendationPromo || challengeJoined}
+              onActivatePromo={() => {
+                setScreen("challenge");
+              }}
+              onBuy={() => {
+                if (!authed) {
+                  setLoginRedirect("checkoutInfos");
+                  setScreen("shop");
+                } else {
+                  setScreen("checkoutInfos");
+                }
               }}
             />
           )}
@@ -212,19 +237,26 @@ export function App() {
           {screen === "shop" && (
             <Shop
               tire={selectedTire}
-              promoActive={shopPromo || challengeJoined}
-              onActivatePromo={() => {
-                setScreen("challenge");
+              promoActive={recommendationPromo || challengeJoined}
+              onActivatePromo={() => setScreen("challenge")}
+              onSelect={(id) => setSelectedTireId(id)}
+              onBuy={() => {
+                if (!authed) {
+                  setLoginRedirect("checkoutInfos");
+                  setScreen("login");
+                } else {
+                  setScreen("checkoutInfos");
+                }
               }}
-              onBuy={() => setScreen("checkoutInfos")}
             />
           )}
+
 
           {/* CHECKOUT INFOS */}
           {screen === "checkoutInfos" && (
             <CheckoutInfosScreen
               onContinue={() => setScreen("checkoutPayment")}
-              onBack={() => setScreen("shop")}
+              onBack={() => setScreen("recommendation")}
             />
           )}
 
@@ -238,8 +270,26 @@ export function App() {
 
           {/* CONFIRM */}
           {screen === "confirm" && (
-            <Confirm onRestart={() => setScreen("progress")} />
+            <Confirm
+              onRestart={() => setScreen("progress")}
+              onAccount={() => setScreen("account")}
+            />
           )}
+
+          {/* ACCOUNT */}
+          {screen === "account" && (
+            <Account
+              onBack={() => setScreen("home")}
+              onLogout={() => {
+                setAuthed(false);
+                setStravaLinked(false);
+                setScreen("home");
+              }}
+              orders={orders}
+            />
+          )}
+
+
         </div>
 
         {/* BOTTOM NAV */}
