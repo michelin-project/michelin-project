@@ -8,7 +8,7 @@ async function bootstrap() {
   // CORS : si CORS_ORIGIN est défini, on restreint aux origines listées
   // (séparées par des virgules) ; sinon on autorise tout (comportement dev).
   const corsOrigin = process.env.CORS_ORIGIN;
-  app.enableCors(
+  app.enableCors( 
     corsOrigin ? { origin: corsOrigin.split(',').map((o) => o.trim()) } : {},
   ); // Indispensable pour communiquer avec le front Vite (React)
 
