@@ -41,15 +41,16 @@ export const Route = createFileRoute("/")({
 });
 
 export function App() {
-  const [screen, setScreen] = useState<ScreenKey>("home");
+  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("michelin_token");
+  const [screen, setScreen] = useState<ScreenKey>(hasToken ? "progress" : "home");
   const [answers, setAnswers] = useState<Answers>({});
   const [selectedTireId, setSelectedTireId] = useState<string>(TIRES[0].id);
   const [recoResults, setRecoResults] = useState<Tire[]>([]);
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(hasToken);
   const [stravaLinked, setStravaLinked] = useState(false);
   const [challengeJoined, setChallengeJoined] = useState(false);
   const [shopPromo, setShopPromo] = useState(false);
-  const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("home");
+  const [loginRedirect, setLoginRedirect] = useState<ScreenKey>("progress");
 
   const archetype = useMemo(() => deriveArchetype(answers), [answers]);
   // Recommandations dynamiques : on interroge POST /recommendations dès que le
@@ -93,8 +94,12 @@ export function App() {
             <Home
               onStart={() => setScreen("quiz")}
               onLogin={() => {
-                setLoginRedirect("home");
-                setScreen("login");
+                if (authed) {
+                  setScreen("progress");
+                } else {
+                  setLoginRedirect("progress");
+                  setScreen("login");
+                }
               }}
               authed={authed}
             />
