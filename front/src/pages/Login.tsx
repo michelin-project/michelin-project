@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MichelinMark } from "../lib/shared-components";
+import { API_URL } from "../lib/api";
 
 export function Login({
   onBack,
@@ -46,7 +47,7 @@ export function Login({
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

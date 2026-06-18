@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MichelinMark } from "../lib/shared-components";
+import { API_URL } from "../lib/api";
 
 export function Register({ onBack, onDone, onSwitch }: {
   onBack: () => void;
@@ -46,7 +47,7 @@ export function Register({ onBack, onDone, onSwitch }: {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/auth/register", {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

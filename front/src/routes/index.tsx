@@ -4,6 +4,7 @@ import type { ScreenKey, Answers, Tire } from "../types/index";
 import { deriveArchetype } from "../lib/app-utils";
 import { TIRES, resolveTireImage } from "../data/index";
 import { BottomNav } from "../lib/shared-components";
+import { API_URL } from "../lib/api";
 
 import { Home } from "../pages/Home";
 import { Login } from "../pages/Login";
@@ -58,7 +59,7 @@ export function App() {
   useEffect(() => {
     if (!answers.bike) return;
     const controller = new AbortController();
-    fetch("http://localhost:3000/recommendations", {
+    fetch(`${API_URL}/recommendations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(answers),
