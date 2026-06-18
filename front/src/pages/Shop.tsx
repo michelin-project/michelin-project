@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search } from "lucide-react";
 import { resolveTireImage } from "../data/index";
 
 export function Shop({
