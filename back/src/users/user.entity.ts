@@ -18,8 +18,8 @@ export class User {
   @Column({ nullable: true })
   archetypeName!: string;
 
-  @Column('json', { nullable: true })
-  scores!: any;
+  @Column({ default: 0 })
+  scores: number = 0;
 
   @Column('json', { nullable: true })
   answers!: any;
