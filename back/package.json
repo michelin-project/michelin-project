@@ -25,6 +25,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.2",
+    "dotenv": "^17.4.2",
     "mongodb": "^7.3.0",
     "mysql2": "^3.22.5",
     "reflect-metadata": "^0.2.2",
