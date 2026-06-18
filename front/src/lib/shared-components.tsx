@@ -56,7 +56,7 @@ export function MichelinMark({ className = "" }: { className?: string }) {
 
 export function BottomNav({ current, onNav }: { current: ScreenKey; onNav: (s: ScreenKey) => void }) {
   const items: { key: ScreenKey; label: string; icon: string }[] = [
-    { key: "home", label: "Accueil", icon: "M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" },
+    // { key: "home", label: "Accueil", icon: "M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" },
     { key: "challenge", label: "Challenge", icon: "M12 2 14.39 8.26 21 9l-5 4.87L17.18 21 12 17.77 6.82 21 8 13.87 3 9l6.61-.74z" },
     { key: "progress", label: "Progression", icon: "M3 17 9 11l4 4 8-8" },
     { key: "shop", label: "Boutique", icon: "M6 6h15l-1.5 9h-12zM6 6 5 3H2m4 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2m11 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2" },
