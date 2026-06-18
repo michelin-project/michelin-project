@@ -17,6 +17,7 @@ export function Shop({
   const [sort, setSort] = useState<"asc" | "desc">("asc");
   const [selected, setSelected] = useState<string | null>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
     fetch("http://localhost:3000/products")
@@ -45,6 +46,11 @@ export function Shop({
       return sort === "asc" ? pA - pB : pB - pA;
     });
   }, [q, sort, products]);
+
+  // On réinitialise à 10 éléments affichés si on change la recherche ou le tri
+  useEffect(() => {
+    setVisibleCount(10);
+  }, [q, sort]);
 
   const handleSelect = (id: string) => {
     setSelected(id);
@@ -80,7 +86,7 @@ export function Shop({
 
       {/* Liste des pneus */}
       <div className="grid grid-cols-2 gap-3">
-        {items.map((t) => {
+        {items.slice(0, visibleCount).map((t) => {
             const id = String(t._id);
             const isActive = selected === id;
             const name = t.webProductDesignation || t.webRangeName || t.rangeInternal || t["Web Product Designation"] || "Pneu Michelin";
@@ -124,6 +130,16 @@ export function Shop({
           );
         })}
       </div>
+
+      {/* Bouton Voir + */}
+      {visibleCount < items.length && (
+        <button
+          onClick={() => setVisibleCount((prev) => prev + 10)}
+          className="w-full h-12 mt-2 rounded-xl font-bold text-sm bg-surface border border-border text-michelin-blue transition-colors hover:bg-michelin-blue/5"
+        >
+          Voir +
+        </button>
+      )}
 
       {items.length === 0 && (
         <div className="m-card p-8 text-center text-sm text-muted-foreground">
